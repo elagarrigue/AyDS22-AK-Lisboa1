@@ -15,9 +15,9 @@ internal class DateFormatImpl : DateFormat {
         val songDate: List<String> = song.releaseDate.split("-")
 
         return when (song.releaseDatePrecision) {
-            "day" ->  releaseDay(songDate)
-            "month" ->  releaseMonth(songDate)
-            "year" ->  releaseYear(songDate)
+            ReleaseDatePrecision.DAY ->  releaseDay(songDate)
+            ReleaseDatePrecision.MONTH ->  releaseMonth(songDate)
+            ReleaseDatePrecision.YEAR ->  releaseYear(songDate)
             else ->  releaseEmpty()
         }
     }

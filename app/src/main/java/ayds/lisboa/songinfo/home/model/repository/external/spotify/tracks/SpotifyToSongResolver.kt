@@ -1,5 +1,6 @@
 package ayds.lisboa.songinfo.home.model.repository.external.spotify.tracks
 
+import ayds.lisboa.songinfo.home.model.entities.ReleaseDatePrecision
 import com.google.gson.Gson
 import ayds.lisboa.songinfo.home.model.entities.SpotifySong
 import com.google.gson.JsonObject
@@ -72,8 +73,8 @@ internal class JsonToSongResolver : SpotifyToSongResolver {
         return externalUrl[SPOTIFY].asString
     }
 
-    private fun JsonObject.getReleaseDatePrecision() : String{
+    private fun JsonObject.getReleaseDatePrecision() : ReleaseDatePrecision{
         val album = this[ALBUM].asJsonObject
-        return album[RELEASE_DATE_PRECISION].asString
+        return ReleaseDatePrecision.valueOf(album[RELEASE_DATE_PRECISION].asString.uppercase())
     }
 }
