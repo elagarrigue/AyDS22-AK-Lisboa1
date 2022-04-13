@@ -4,25 +4,26 @@ import ayds.lisboa.songinfo.utils.UtilsInjector
 import ayds.lisboa.songinfo.utils.view.LeapYearCheck
 
 interface DateFormat {
-    fun writeReleaseDatePrecision() : String
+    fun writeReleaseDatePrecision(song: Song) : String
 }
 
-internal class DateFormatImpl(
-    private val song: Song
-) : DateFormat {
+internal class DateFormatImpl : DateFormat {
 
     private val leapYearCheck: LeapYearCheck = UtilsInjector.leapYearCheck
 
-    private val songDate: List<String> = song.releaseDate.split("-")
+    override fun writeReleaseDatePrecision(song: Song): String {
+        val songDate: List<String> = song.releaseDate.split("-")
 
-    override fun writeReleaseDatePrecision(): String = when(song.releaseDatePrecision){
-        "day" -> releaseDay()
-        "month" -> releaseMonth()
-        "year" -> releaseYear()
-        else -> releaseEmpty()
+        return when (song.releaseDatePrecision) {
+            "day" ->  releaseDay(songDate)
+            "month" ->  releaseMonth(songDate)
+            "year" ->  releaseYear(songDate)
+            else ->  releaseEmpty()
+        }
     }
 
-    private fun releaseDay(): String {
+
+    private fun releaseDay(songDate: List<String>): String {
         val day = songDate.last()
         val month = songDate[1]
         val year = songDate.first()
@@ -30,14 +31,14 @@ internal class DateFormatImpl(
         return "$day/$month/$year"
     }
 
-    private fun releaseMonth(): String {
+    private fun releaseMonth(songDate: List<String>): String {
         val month = songDate.last()
         val year = songDate.first()
 
         return Months.values()[month.toInt()-1].toString() + ", " + year
     }
 
-    private fun releaseYear(): String {
+    private fun releaseYear(songDate: List<String>): String {
         val year = songDate.first()
         val leap = leapYearCheck.isLeapYear(year.toInt())
 

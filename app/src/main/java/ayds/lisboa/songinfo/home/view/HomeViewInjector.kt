@@ -2,10 +2,13 @@ package ayds.lisboa.songinfo.home.view
 
 import ayds.lisboa.songinfo.home.controller.HomeControllerInjector
 import ayds.lisboa.songinfo.home.model.HomeModelInjector
+import ayds.lisboa.songinfo.home.model.entities.DateFormat
+import ayds.lisboa.songinfo.home.model.entities.DateFormatImpl
 
 object HomeViewInjector {
 
-    val songDescriptionHelper: SongDescriptionHelper = SongDescriptionHelperImpl()
+    private val dateFormat: DateFormat = DateFormatImpl()
+    val songDescriptionHelper: SongDescriptionHelper = SongDescriptionHelperImpl(dateFormat)
 
     fun init(homeView: HomeView) {
         HomeModelInjector.initHomeModel(homeView)
