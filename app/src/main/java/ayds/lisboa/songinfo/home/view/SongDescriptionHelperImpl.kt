@@ -1,8 +1,6 @@
 package ayds.lisboa.songinfo.home.view
 
-import ayds.lisboa.songinfo.home.model.entities.EmptySong
-import ayds.lisboa.songinfo.home.model.entities.Song
-import ayds.lisboa.songinfo.home.model.entities.SpotifySong
+import ayds.lisboa.songinfo.home.model.entities.*
 
 interface SongDescriptionHelper {
     fun getSongDescriptionText(song: Song = EmptySong): String
@@ -10,6 +8,9 @@ interface SongDescriptionHelper {
 
 internal class SongDescriptionHelperImpl : SongDescriptionHelper {
     override fun getSongDescriptionText(song: Song): String {
+        DateFormatInjector.init(song)
+        val dateFormat: DateFormat = DateFormatInjector.getDateFormat()
+
         return when (song) {
             is SpotifySong ->
                 "${
@@ -18,7 +19,7 @@ internal class SongDescriptionHelperImpl : SongDescriptionHelper {
                 }\n" +
                         "Artist: ${song.artistName}\n" +
                         "Album: ${song.albumName}\n" +
-                        "Release date: ${song.writeReleaseDatePrecision}"
+                        "Release date: ${dateFormat.writeReleaseDatePrecision()}"
             else -> "Song not found"
         }
     }

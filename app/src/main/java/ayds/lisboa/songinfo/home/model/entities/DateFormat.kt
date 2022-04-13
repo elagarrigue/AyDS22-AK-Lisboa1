@@ -4,24 +4,45 @@ import ayds.lisboa.songinfo.utils.UtilsInjector
 import ayds.lisboa.songinfo.utils.view.LeapYearCheck
 
 interface DateFormat {
-    fun writeReleaseDatePrecision(song: Song) : String
+    fun writeReleaseDatePrecision() : String
 }
 
-internal class DateFormatImpl() : DateFormat {
+internal class DateFormatImpl(
+    private val song: Song
+) : DateFormat {
 
     private val leapYearCheck: LeapYearCheck = UtilsInjector.leapYearCheck
 
-    override fun writeReleaseDatePrecision(song: Song): String = when(song.releaseDatePrecision){
-            "day" -> releaseDay(song.releaseDate)
-            "month" -> releaseMonth(song.releaseDate)
-            else -> releaseYear(song.releaseDate)
-        }
+    private val songDate: List<String> = song.releaseDate.split("-")
 
-    private fun releaseDay(releaseDate : String): String = releaseDate.split("-").last() + "/" + releaseDate.split("-")[1] + "/" + releaseDate.split("-").first()
+    override fun writeReleaseDatePrecision(): String = when(song.releaseDatePrecision){
+        "day" -> releaseDay()
+        "month" -> releaseMonth()
+        "year" -> releaseYear()
+        else -> releaseEmpty()
+    }
 
-    private fun releaseMonth(releaseDate : String): String = MONTHS.values()[releaseDate.split("-").last().toInt()-1].toString() + ", " + releaseDate.split("-").first()
+    private fun releaseDay(): String {
+        val day = songDate.last()
+        val month = songDate[1]
+        val year = songDate.first()
 
-    private fun releaseYear(releaseDate : String): String = releaseDate.split("-").first() + if(leapYearCheck.isLeapYear(releaseDate.split("-").first().toInt())) " (leap year)" else " (not a leap year)"
+        return "$day/$month/$year"
+    }
 
+    private fun releaseMonth(): String {
+        val month = songDate.last()
+        val year = songDate.first()
 
+        return Months.values()[month.toInt()-1].toString() + ", " + year
+    }
+
+    private fun releaseYear(): String {
+        val year = songDate.first()
+        val leap = leapYearCheck.isLeapYear(year.toInt())
+
+        return year + if(leap) " (leap year)" else " (not a leap year)"
+    }
+
+    private fun releaseEmpty(): String = "Release Date Precision not detected"
 }

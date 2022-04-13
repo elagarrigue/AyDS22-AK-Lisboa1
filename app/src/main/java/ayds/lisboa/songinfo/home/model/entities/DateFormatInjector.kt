@@ -2,5 +2,15 @@ package ayds.lisboa.songinfo.home.model.entities
 
 object DateFormatInjector {
 
-    val dateFormat : DateFormat = DateFormatImpl()
+    private lateinit var song: Song
+
+    private lateinit var dateFormat : DateFormat
+
+    fun init(lateSong: Song){
+        song=lateSong
+        dateFormat = DateFormatImpl(song)
+    }
+
+    fun getDateFormat(): DateFormat = dateFormat
+
 }

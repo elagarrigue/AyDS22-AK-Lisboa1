@@ -24,14 +24,8 @@ data class SpotifySong(
   override val spotifyUrl: String,
   override val imageUrl: String,
   override val releaseDatePrecision: String,
-  override var isLocallyStored: Boolean = false,
-
-  private val dateFormat: DateFormat = DateFormatInjector.dateFormat
-) : Song {
-
-    val writeReleaseDatePrecision: String = dateFormat.writeReleaseDatePrecision(this)
-
-}
+  override var isLocallyStored: Boolean = false
+) : Song {}
 
 object EmptySong : Song {
     override val id: String = ""
