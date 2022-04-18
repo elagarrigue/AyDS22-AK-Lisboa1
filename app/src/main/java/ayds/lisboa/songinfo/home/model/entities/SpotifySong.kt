@@ -1,8 +1,5 @@
 package ayds.lisboa.songinfo.home.model.entities
 
-import ayds.lisboa.songinfo.utils.UtilsInjector
-import ayds.lisboa.songinfo.utils.view.LeapYearCheck
-
 interface Song {
     val id: String
     val songName: String

@@ -1,15 +1,15 @@
-package ayds.lisboa.songinfo.home.model.entities
+package ayds.lisboa.songinfo.home.view
 
-import ayds.lisboa.songinfo.utils.UtilsInjector
+import ayds.lisboa.songinfo.home.model.entities.Months
+import ayds.lisboa.songinfo.home.model.entities.ReleaseDatePrecision
+import ayds.lisboa.songinfo.home.model.entities.Song
 import ayds.lisboa.songinfo.utils.view.LeapYearCheck
 
 interface DateFormat {
     fun writeReleaseDatePrecision(song: Song) : String
 }
 
-internal class DateFormatImpl : DateFormat {
-
-    private val leapYearCheck: LeapYearCheck = UtilsInjector.leapYearCheck
+internal class DateFormatImpl(private val leapYearCheck: LeapYearCheck) : DateFormat {
 
     override fun writeReleaseDatePrecision(song: Song): String {
         val songDate: List<String> = song.releaseDate.split("-")
@@ -18,10 +18,9 @@ internal class DateFormatImpl : DateFormat {
             ReleaseDatePrecision.DAY ->  releaseDay(songDate)
             ReleaseDatePrecision.MONTH ->  releaseMonth(songDate)
             ReleaseDatePrecision.YEAR ->  releaseYear(songDate)
-            else ->  releaseEmpty()
+            else ->  song.releaseDatePrecision.toString()
         }
     }
-
 
     private fun releaseDay(songDate: List<String>): String {
         val day = songDate.last()
@@ -45,5 +44,4 @@ internal class DateFormatImpl : DateFormat {
         return year + if(leap) " (leap year)" else " (not a leap year)"
     }
 
-    private fun releaseEmpty(): String = "Release Date Precision not detected"
 }
