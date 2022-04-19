@@ -2,6 +2,8 @@ package ayds.lisboa.songinfo.home.model.repository.external.spotify.tracks
 
 import ayds.lisboa.songinfo.home.model.repository.external.spotify.SpotifyTrackService
 import ayds.lisboa.songinfo.home.model.repository.external.spotify.auth.SpotifyAuthInjector
+import ayds.lisboa.songinfo.home.model.repository.ReleaseDateMapper
+import ayds.lisboa.songinfo.home.model.repository.ReleaseDateMapperImpl
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
@@ -13,8 +15,7 @@ object SpotifyTrackInjector {
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
     private val spotifyTrackAPI = spotifyAPIRetrofit.create(SpotifyTrackAPI::class.java)
-    private val spotifyToSongResolver: SpotifyToSongResolver = JsonToSongResolver()
-
+    private val spotifyToSongResolver: SpotifyToSongResolver = JsonToSongResolver(ReleaseDateMapperImpl())
 
     val spotifyTrackService: SpotifyTrackService = SpotifyTrackServiceImpl(
       spotifyTrackAPI,

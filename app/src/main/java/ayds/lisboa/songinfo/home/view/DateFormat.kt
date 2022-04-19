@@ -7,6 +7,7 @@ import ayds.lisboa.songinfo.utils.view.LeapYearCheck
 
 interface DateFormat {
     fun writeReleaseDatePrecision(song: Song) : String
+    fun getReleaseDatePrecision(dateSong: String) : ReleaseDatePrecision
 }
 
 internal class DateFormatImpl(private val leapYearCheck: LeapYearCheck) : DateFormat {
@@ -19,6 +20,15 @@ internal class DateFormatImpl(private val leapYearCheck: LeapYearCheck) : DateFo
             ReleaseDatePrecision.MONTH ->  releaseMonth(songDate)
             ReleaseDatePrecision.YEAR ->  releaseYear(songDate)
             else ->  song.releaseDatePrecision.toString()
+        }
+    }
+
+    override fun getReleaseDatePrecision(dateSong: String) : ReleaseDatePrecision{
+        return when(dateSong) {
+            "day" -> ReleaseDatePrecision.DAY
+            "month" -> ReleaseDatePrecision.MONTH
+            "year" -> ReleaseDatePrecision.YEAR
+            else -> ReleaseDatePrecision.EMPTY
         }
     }
 
