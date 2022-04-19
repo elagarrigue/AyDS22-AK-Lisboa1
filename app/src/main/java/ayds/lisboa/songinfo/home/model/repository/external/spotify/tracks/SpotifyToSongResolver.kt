@@ -79,14 +79,5 @@ internal class JsonToSongResolver(private val releaseDateMapper: ReleaseDateMapp
         val releaseDatePrecision = album[RELEASE_DATE_PRECISION].asString
         return releaseDateMapper.mapReleaseDatePrecision(releaseDatePrecision)
     }
-    /*
-    private fun stringToReleaseDatePrecision(datePrecision: String) : ReleaseDatePrecision{
-        return when(datePrecision) {
-            "day" -> ReleaseDatePrecision.DAY
-            "month" -> ReleaseDatePrecision.MONTH
-            "year" -> ReleaseDatePrecision.YEAR
-            else -> ReleaseDatePrecision.EMPTY
-        }
-    }
-     */
+
 }
