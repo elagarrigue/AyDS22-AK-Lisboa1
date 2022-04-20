@@ -22,38 +22,36 @@ import java.lang.StringBuilder
 
 interface OtherInfoWindow {
     fun onCreate(savedInstanceState: Bundle?)
-    fun getArtistName():String
 }
 
-private const val ARTIST_NAME_EXTRA = "artistName"
+const val ARTIST_NAME_EXTRA = "artistName"
 
-internal class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
-    private var textPane2: TextView? = null
+class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
+
+    private lateinit var biographyTextView: TextView
+    private lateinit var dataBase: DataBase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
-        textPane2 = findViewById(R.id.textPane2)
+        biographyTextView = findViewById(R.id.biographyTextView)
         open(intent.getStringExtra("artistName"))
     }
 
     private fun getArtistInfo(artistName: String?) {
 
-        // create
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://ws.audioscrobbler.com/2.0/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-        val lastFMAPI = retrofit.create(LastFMAPI::class.java)
-        Log.e("TAG", "artistName $artistName")
+        val lastFMAPI = initRetrofit().create(LastFMAPI::class.java)
         Thread {
-            var text = DataBase.getInfo(dataBase, artistName)
-            if (text != null) { // exists in db
-                text = "[*]$text"
-            } else { // get from service
+            var biographyText = DataBase.getInfo(dataBase, artistName)
+            if (biographyText != null) { // exists in db
+                biographyText = "[*]$biographyText"
+            } else {
+                //definir funcion que recupere los datos
+
+                // get from service
                 val callResponse: Response<String>
                 try {
                     callResponse = lastFMAPI.getArtistInfo(artistName).execute()
-                    Log.e("TAG", "JSON " + callResponse.body())
                     val gson = Gson()
                     val jobj = gson.fromJson(callResponse.body(), JsonObject::class.java)
                     val artist = jobj["artist"].asJsonObject
@@ -62,14 +60,13 @@ internal class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
                     val url = artist["url"]
 
                     if (extract == null) {
-                        text = "No Results"
+                        biographyText = "No Results"
                     } else {
-                        text = extract.asString.replace("\\n", "\n")
-                        text = textToHtml(text, artistName)
-
+                        biographyText = extract.asString.replace("\\n", "\n")
+                        biographyText = textToHtml(biographyText, artistName)
 
                         // save to DB  <o/
-                        DataBase.saveArtist(dataBase, artistName, text)
+                        DataBase.saveArtist(dataBase, artistName, biographyText)
                     }
                     val urlString = jsonElementToString(url)
 
@@ -85,46 +82,39 @@ internal class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
             }
             val imageUrl = //deberia ir arriba definida?
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
-            Log.e("TAG", "Get Image from $imageUrl")
-            val finalText = text
+            val finalText = biographyText
             runOnUiThread {
                 Picasso.get().load(imageUrl).into(findViewById<View>(R.id.imageView) as ImageView)
-                textPane2!!.text = Html.fromHtml(finalText)
+                biographyTextView!!.text = Html.fromHtml(finalText)
             }
         }.start()
     }
 
-    private var dataBase: DataBase? = null
+    private fun initRetrofit() = Retrofit.Builder()
+        .baseUrl("https://ws.audioscrobbler.com/2.0/")
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .build()
+
     private fun open(artist: String?) {
         dataBase = DataBase(this)
         DataBase.saveArtist(dataBase, "test", "sarasa")
-        Log.e("TAG", "" + DataBase.getInfo(dataBase, "test"))
-        Log.e("TAG", "" + DataBase.getInfo(dataBase, "nada"))
         getArtistInfo(artist)
     }
 
-   //companion object {
-        //const val ARTIST_NAME_EXTRA = "artistName"
-        private fun textToHtml(text: String, term: String?): String {
-            val builder = StringBuilder()
-            builder.append("<html><div width=400>")
-            builder.append("<font face=\"arial\">")
-            val textWithBold = text
-                .replace("'", " ")
-                .replace("\n", "<br>")
-                .replace("(?i)" + term!!.toRegex(), "<b>" + term.toUpperCase() + "</b>")
-            builder.append(textWithBold)
-            builder.append("</font></div></html>")
-            return builder.toString()
-        }
-   //}
-
-    private fun jsonElementToString (jsonElement: JsonElement ): String{
+    private fun jsonElementToString(jsonElement: JsonElement): String {
         return jsonElement.asString
     }
 
-    override
-    fun getArtistName() : String {
-        return ARTIST_NAME_EXTRA
+    private fun textToHtml(text: String, term: String?): String {
+        val builder = StringBuilder()
+        builder.append("<html><div width=400>")
+        builder.append("<font face=\"arial\">")
+        val textWithBold = text
+            .replace("'", " ")
+            .replace("\n", "<br>")
+            .replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
+        builder.append(textWithBold)
+        builder.append("</font></div></html>")
+        return builder.toString()
     }
 }
