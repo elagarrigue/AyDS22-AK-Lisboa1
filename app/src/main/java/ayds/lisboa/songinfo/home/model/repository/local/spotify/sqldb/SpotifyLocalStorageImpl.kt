@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import ayds.lisboa.songinfo.home.model.entities.ReleaseDatePrecision
 import ayds.lisboa.songinfo.home.model.entities.SpotifySong
 import ayds.lisboa.songinfo.home.model.repository.local.spotify.SpotifyLocalStorage
 
@@ -24,7 +25,8 @@ internal class SpotifyLocalStorageImpl(
         ALBUM_COLUMN,
         RELEASE_DATE_COLUMN,
         SPOTIFY_URL_COLUMN,
-        IMAGE_URL_COLUMN
+        IMAGE_URL_COLUMN,
+        RELEASE_DATE_PRECISION_COLUMN
     )
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -55,6 +57,7 @@ internal class SpotifyLocalStorageImpl(
             put(RELEASE_DATE_COLUMN, song.releaseDate)
             put(SPOTIFY_URL_COLUMN, song.spotifyUrl)
             put(IMAGE_URL_COLUMN, song.imageUrl)
+            put(RELEASE_DATE_PRECISION_COLUMN, song.releaseDatePrecision.ordinal)
         }
 
         writableDatabase?.insert(SONGS_TABLE, null, values)

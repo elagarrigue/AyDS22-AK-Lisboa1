@@ -1,5 +1,7 @@
 package ayds.lisboa.songinfo.home.model.repository.external.spotify.tracks
 
+import ayds.lisboa.songinfo.home.model.repository.ReleaseDateMapper
+import ayds.lisboa.songinfo.home.model.entities.ReleaseDatePrecision
 import com.google.gson.Gson
 import ayds.lisboa.songinfo.home.model.entities.SpotifySong
 import com.google.gson.JsonObject
@@ -19,15 +21,17 @@ private const val RELEASE_DATE = "release_date"
 private const val URL = "url"
 private const val EXTERNAL_URL = "external_urls"
 private const val SPOTIFY = "spotify"
+private const val RELEASE_DATE_PRECISION = "release_date_precision"
 
-internal class JsonToSongResolver : SpotifyToSongResolver {
+internal class JsonToSongResolver(private val releaseDateMapper: ReleaseDateMapper) : SpotifyToSongResolver {
 
     override fun getSongFromExternalData(serviceData: String?): SpotifySong? =
         try {
+            println(serviceData);
             serviceData?.getFirstItem()?.let { item ->
                 SpotifySong(
                   item.getId(), item.getSongName(), item.getArtistName(), item.getAlbumName(),
-                  item.getReleaseDate(), item.getSpotifyUrl(), item.getImageUrl()
+                  item.getReleaseDate(), item.getSpotifyUrl(), item.getImageUrl(), item.getReleaseDatePrecision()
                 )
             }
         } catch (e: Exception) {
@@ -68,6 +72,12 @@ internal class JsonToSongResolver : SpotifyToSongResolver {
     private fun JsonObject.getSpotifyUrl(): String {
         val externalUrl = this[EXTERNAL_URL].asJsonObject
         return externalUrl[SPOTIFY].asString
+    }
+
+    private fun JsonObject.getReleaseDatePrecision(): ReleaseDatePrecision {
+        val album = this[ALBUM].asJsonObject
+        val releaseDatePrecision = album[RELEASE_DATE_PRECISION].asString
+        return releaseDateMapper.mapReleaseDatePrecision(releaseDatePrecision)
     }
 
 }
