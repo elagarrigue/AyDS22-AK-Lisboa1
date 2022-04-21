@@ -56,7 +56,7 @@ class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
     }
 
     private fun createBiography(artistName: String?): String {
-        var biographyText = DataBase.getInfo(dataBase, artistName)
+        var biographyText = dataBase.getInfo(dataBase, artistName)
         biographyText = if (biographyText != null) { // exists in db
             "[*]$biographyText"
         } else {
@@ -86,7 +86,7 @@ class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
                 biographyText = textToHtml(biographyText, artistName)
 
                 // save to DB  <o/
-                DataBase.saveArtist(dataBase, artistName, biographyText)
+                dataBase.saveArtist(dataBase, artistName, biographyText)
             }
             val urlString = jsonElementToString(url)
 
@@ -111,7 +111,7 @@ class OtherInfoWindowImpl : AppCompatActivity(), OtherInfoWindow {
 
     private fun open(artist: String?) {
         dataBase = DataBase(this)
-        DataBase.saveArtist(dataBase, "test", "sarasa")
+        dataBase.saveArtist(dataBase, "test", "sarasa")
         getArtistInfo(artist)
     }
 
