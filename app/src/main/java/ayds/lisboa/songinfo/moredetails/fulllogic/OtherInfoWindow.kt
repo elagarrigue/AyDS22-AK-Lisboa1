@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import android.content.Intent
 import android.net.Uri
+import android.os.Build.*
 import com.squareup.picasso.Picasso
 import android.text.Html
 import android.text.Spanned
@@ -66,8 +67,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun updateArtistImageURL() {
-        Picasso.get().load(IMAGE_URL_LASTFM)
-            .into(imageView)
+        Picasso.get().load(IMAGE_URL_LASTFM).into(imageView)
     }
 
     private fun updateArtistBiography(biographyText: String) {
@@ -76,35 +76,30 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 
-    private fun setTextHTML(html: String): Spanned
-    {
-        val result: Spanned = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-        } else {
-            Html.fromHtml(html)
-        }
+    private fun setTextHTML(html: String): Spanned {
+        val result: Spanned =
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                Html.fromHtml(html)
+            }
         return result
     }
 
     private fun createBiography(artistName: String?): String {
-        var biographyText = dataBase.getInfo(artistName)
-        biographyText = if (biographyText != null) {
-            "[*]$biographyText"
-        } else {
-            getArtistBiographyFromLastFM(artistName)
-        }
-        return biographyText
+        val biographyText = dataBase.getInfo(artistName)
+        return if (biographyText != null) "[*]$biographyText" else getArtistBiographyFromLastFM(artistName)
     }
 
     private fun getLastFMAPI() = initRetrofit().create(LastFMAPI::class.java)
 
     private fun getArtistBiographyFromLastFM(artistName: String?): String {
-            getArtistJSon(artistName)
-            setListenerUrlButton(getBiographyUrl())
-            return getArtistBiographyText(artistName)
+        getArtistJSon(artistName)
+        setListenerUrlButton(getBiographyUrl())
+        return getArtistBiographyText(artistName)
     }
 
-    private fun getArtistBiographyText(artistName: String?):String {
+    private fun getArtistBiographyText(artistName: String?): String {
         val biographyText: String = if (getBiographyExtract().isEmpty()) {
             "No Results"
         } else {
@@ -121,36 +116,36 @@ class OtherInfoWindow : AppCompatActivity() {
         return biographyText
     }
 
-    private fun getArtistJSon(artistName: String?){
+    private fun getArtistJSon(artistName: String?) {
         val callResponse: Response<String>
         try {
             callResponse = getLastFMAPI().getArtistInfo(artistName).execute()
             val gson = Gson()
             biographyJsonObject = gson.fromJson(callResponse.body(), JsonObject::class.java)
-        }
-         catch (e1: IOException) {
+        } catch (e1: IOException) {
             Log.e("TAG", "Error $e1")
             e1.printStackTrace()
         }
     }
 
     private fun getBiographyExtract(): String {
-        val artist = biographyJsonObject [ARTIST].asJsonObject
+        val artist = biographyJsonObject[ARTIST].asJsonObject
         val bio = artist[ARTIST_BIOGRAPHY].asJsonObject
         return bio[ARTIST_BIOGRAPHY_EXTRACT].asString
     }
 
     private fun getBiographyUrl(): String {
-        val artist = biographyJsonObject [ARTIST].asJsonObject
+        val artist = biographyJsonObject[ARTIST].asJsonObject
         return artist[ARTIST_BIOGRAPHY_URL].asString
     }
-    private fun setListenerUrlButton(urlBiography: String){
+
+    private fun setListenerUrlButton(urlBiography: String) {
         openUrlButton.setOnClickListener {
             navigateToUrl(urlBiography)
         }
     }
 
-    private fun navigateToUrl(urlBiography: String){
+    private fun navigateToUrl(urlBiography: String) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(urlBiography)
         startActivity(intent)
@@ -176,10 +171,10 @@ class OtherInfoWindow : AppCompatActivity() {
         return builder.toString()
     }
 
-    private fun artistBiographyTextWithBold(text: String, term:String?): String{
+    private fun artistBiographyTextWithBold(text: String, term: String?): String {
         return text
-                .replace("'", " ")
-                .replace("\n", "<br>")
-                .replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
+            .replace("'", " ")
+            .replace("\n", "<br>")
+            .replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
     }
 }
