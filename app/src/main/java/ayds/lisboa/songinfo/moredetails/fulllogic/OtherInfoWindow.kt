@@ -105,7 +105,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getArtistBiographyText(artistName: String?):String {
-        val biographyText: String = if (getBiographyExtract() == "") {
+        val biographyText: String = if (getBiographyExtract().isEmpty()) {
             "No Results"
         } else {
             updateArtistBiographyText(artistName)
