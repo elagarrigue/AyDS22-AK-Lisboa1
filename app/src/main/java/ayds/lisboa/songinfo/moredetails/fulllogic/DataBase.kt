@@ -38,16 +38,20 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
     }
 
     fun getInfo(artist: String?): String? {
-        val cursor = readableDatabase.query(
+        val cursor = cursorDefinition(artist)
+        return cursorToInfoMapper(cursor)
+    }
+
+    private fun cursorDefinition(artist: String?): Cursor {
+        return readableDatabase.query(
             ARTIST_TABLE,
             projection,
-            "$ARTIST_COLUMN  = ?",
+            SELECTION,
             arrayOf(artist),
             null,
             null,
             SORT_ORDER
         )
-        return cursorToInfoMapper(cursor)
     }
 
     private fun cursorToInfoMapper(cursor: Cursor): String? {
@@ -59,6 +63,6 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
             items.add(info)
         }
         cursor.close()
-        return if (items.isEmpty()) null else items[0]
+        return items.firstOrNull()
     }
 }

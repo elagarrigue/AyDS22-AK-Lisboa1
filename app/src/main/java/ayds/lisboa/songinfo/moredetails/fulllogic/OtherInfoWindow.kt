@@ -29,6 +29,8 @@ private const val ARTIST = "artist"
 private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
 private const val ARTIST_BIOGRAPHY_URL = "url"
+private const val ASTERISK = "[*]"
+private const val NO_RESULTS = "No Results"
 
 class OtherInfoWindow : AppCompatActivity() {
 
@@ -54,10 +56,14 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistInfo(artistName: String?) {
         Thread {
-            val artistBiography = createBiography(artistName)
-            updateArtistImage()
-            updateArtistBiography(artistBiography)
+            artistInfo(artistName)
         }.start()
+    }
+
+    private fun artistInfo(artistName: String?) {
+        val artistBiography = createBiography(artistName)
+        updateArtistImage()
+        updateArtistBiography(artistBiography)
     }
 
     private fun updateArtistImage() {
@@ -88,7 +94,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun createBiography(artistName: String?): String {
         val biographyText = dataBase.getInfo(artistName)
-        return if (biographyText != null) "[*]$biographyText" else getArtistBiographyFromLastFM(artistName)
+        return if (biographyText != null) "$ASTERISK $biographyText" else getArtistBiographyFromLastFM(artistName)
     }
 
     private fun getLastFMAPI() = initRetrofit().create(LastFMAPI::class.java)
@@ -101,7 +107,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistBiographyText(artistName: String?): String {
         val biographyText: String = if (getBiographyExtract().isEmpty()) {
-            "No Results"
+            NO_RESULTS
         } else {
             updateArtistBiographyText(artistName)
         }
