@@ -39,13 +39,15 @@ class OtherInfoWindow : AppCompatActivity() {
     private lateinit var imageView: ImageView
     private lateinit var dataBase: DataBase
     private lateinit var biographyJsonObject: JsonObject
+    private lateinit var serviceApi: LastFMAPI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
 
         initProperties()
-        open(intent.getStringExtra("artistName"))
+        initDataBase()
+        initArtist()
     }
 
     private fun initProperties() {
@@ -54,10 +56,27 @@ class OtherInfoWindow : AppCompatActivity() {
         imageView = findViewById<View>(R.id.imageView) as ImageView
     }
 
-    private fun open(artist: String?) {
+    private fun initDataBase(){
         dataBase = DataBase(this)
-        dataBase.saveArtist("test", "sarasa")
+        setLastFMAPI()
+    }
+
+    private fun setLastFMAPI() {
+        serviceApi = initRetrofit().create(LastFMAPI::class.java)
+    }
+
+    private fun initRetrofit() = Retrofit.Builder()
+        .baseUrl(LASTFM_API)
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .build()
+
+    private fun initArtist() {
+        val artist = getArtist()
         getArtistInfo(artist)
+    }
+
+    private fun getArtist(): String? {
+        return intent.getStringExtra(ARTIST_NAME_EXTRA)
     }
 
     private fun getArtistInfo(artistName: String?) {
@@ -112,7 +131,7 @@ class OtherInfoWindow : AppCompatActivity() {
     private fun getArtistJSon(artistName: String?) {
         val callResponse: Response<String>
         try {
-            callResponse = getLastFMAPI().getArtistInfo(artistName).execute()
+            callResponse = serviceApi.getArtistInfo(artistName).execute()
             val gson = Gson()
             biographyJsonObject = gson.fromJson(callResponse.body(), JsonObject::class.java)
         } catch (e1: IOException) {
@@ -120,8 +139,6 @@ class OtherInfoWindow : AppCompatActivity() {
             e1.printStackTrace()
         }
     }
-
-    private fun getLastFMAPI() = initRetrofit().create(LastFMAPI::class.java)
 
     private fun getBiographyExtract(): String {
         val artist = biographyJsonObject[ARTIST].asJsonObject
@@ -167,11 +184,6 @@ class OtherInfoWindow : AppCompatActivity() {
     private fun saveDataBase(artistName: String?,biographyText: String){
         dataBase.saveArtist(artistName, biographyText)
     }
-
-    private fun initRetrofit() = Retrofit.Builder()
-        .baseUrl(LASTFM_API)
-        .addConverterFactory(ScalarsConverterFactory.create())
-        .build()
 
     private fun textToHtml(text: String, term: String?): String {
         return  StringBuilder().apply {

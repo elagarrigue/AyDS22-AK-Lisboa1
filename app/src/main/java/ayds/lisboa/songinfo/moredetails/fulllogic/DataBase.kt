@@ -39,7 +39,7 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
 
     fun getInfo(artist: String?): String? {
         val cursor = cursorDefinition(artist)
-        return cursorToInfoMapper(cursor)
+        return cursorToFirstInfoMapper(cursor)
     }
 
     private fun cursorDefinition(artist: String?): Cursor {
@@ -54,7 +54,7 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         )
     }
 
-    private fun cursorToInfoMapper(cursor: Cursor): String? {
+    private fun cursorToFirstInfoMapper(cursor: Cursor): String? {
         val items: MutableList<String> = ArrayList()
         while (cursor.moveToNext()) {
             val info = cursor.getString(
