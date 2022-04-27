@@ -54,6 +54,12 @@ class OtherInfoWindow : AppCompatActivity() {
         imageView = findViewById<View>(R.id.imageView) as ImageView
     }
 
+    private fun open(artist: String?) {
+        dataBase = DataBase(this)
+        dataBase.saveArtist("test", "sarasa")
+        getArtistInfo(artist)
+    }
+
     private fun getArtistInfo(artistName: String?) {
         Thread {
             artistInfo(artistName)
@@ -64,6 +70,11 @@ class OtherInfoWindow : AppCompatActivity() {
         val artistBiography = createBiography(artistName)
         updateArtistImage()
         updateArtistBiography(artistBiography)
+    }
+
+    private fun createBiography(artistName: String?): String {
+        val biographyText = dataBase.getInfo(artistName)
+        return if (biographyText != null) "$ASTERISK $biographyText" else getArtistBiographyFromLastFM(artistName)
     }
 
     private fun updateArtistImage() {
@@ -92,34 +103,10 @@ class OtherInfoWindow : AppCompatActivity() {
         return result
     }
 
-    private fun createBiography(artistName: String?): String {
-        val biographyText = dataBase.getInfo(artistName)
-        return if (biographyText != null) "$ASTERISK $biographyText" else getArtistBiographyFromLastFM(artistName)
-    }
-
-    private fun getLastFMAPI() = initRetrofit().create(LastFMAPI::class.java)
-
     private fun getArtistBiographyFromLastFM(artistName: String?): String {
         getArtistJSon(artistName)
         setListenerUrlButton(getBiographyUrl())
         return getArtistBiographyText(artistName)
-    }
-
-    private fun getArtistBiographyText(artistName: String?): String {
-        val biographyText: String = if (getBiographyExtract().isEmpty()) {
-            NO_RESULTS
-        } else {
-            updateArtistBiographyText(artistName)
-        }
-        return biographyText
-    }
-
-    private fun updateArtistBiographyText(artistName: String?): String {
-        var biographyText: String?
-        biographyText = getBiographyExtract().replace("\\n", "\n")
-        biographyText = textToHtml(biographyText, artistName)
-        dataBase.saveArtist(artistName, biographyText)
-        return biographyText
     }
 
     private fun getArtistJSon(artistName: String?) {
@@ -133,6 +120,8 @@ class OtherInfoWindow : AppCompatActivity() {
             e1.printStackTrace()
         }
     }
+
+    private fun getLastFMAPI() = initRetrofit().create(LastFMAPI::class.java)
 
     private fun getBiographyExtract(): String {
         val artist = biographyJsonObject[ARTIST].asJsonObject
@@ -157,30 +146,47 @@ class OtherInfoWindow : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun getArtistBiographyText(artistName: String?): String {
+        return  if (getBiographyExtract().isEmpty()) NO_RESULTS else updateArtistBiographyText(artistName)
+    }
+
+    private fun updateArtistBiographyText(artistName: String?): String {
+        return  convertBiographyToHtml(artistName).apply {
+            saveDataBase(artistName, this)
+        }
+    }
+
+    private fun convertBiographyToHtml(artistName: String?):String {
+        return  textToHtml(replaceLineBreakToText(), artistName)
+    }
+
+    private fun replaceLineBreakToText(): String{
+        return getBiographyExtract().replace("\\n", "\n")
+    }
+
+    private fun saveDataBase(artistName: String?,biographyText: String){
+        dataBase.saveArtist(artistName, biographyText)
+    }
+
     private fun initRetrofit() = Retrofit.Builder()
         .baseUrl(LASTFM_API)
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
-    private fun open(artist: String?) {
-        dataBase = DataBase(this)
-        dataBase.saveArtist("test", "sarasa")
-        getArtistInfo(artist)
-    }
-
     private fun textToHtml(text: String, term: String?): String {
-        val builder = StringBuilder()
-        builder.append("<html><div width=400>")
-        builder.append("<font face=\"arial\">")
-        builder.append(artistBiographyTextWithBold(text, term))
-        builder.append("</font></div></html>")
-        return builder.toString()
+        return  StringBuilder().apply {
+            append("<html><div width=400>")
+            append("<font face=\"arial\">")
+            append(artistBiographyTextWithBold(text, term))
+            append("</font></div></html>")
+        }.toString()
     }
 
     private fun artistBiographyTextWithBold(text: String, term: String?): String {
-        return text
-            .replace("'", " ")
-            .replace("\n", "<br>")
-            .replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
+        return text.apply {
+            replace("'", " ")
+            replace("\n", "<br>")
+            replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
+        }
     }
 }
