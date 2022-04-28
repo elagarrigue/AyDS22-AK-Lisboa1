@@ -46,8 +46,9 @@ class OtherInfoWindow : AppCompatActivity() {
         setContentView(R.layout.activity_other_info)
 
         initProperties()
+        initLastFMAPI()
         initDataBase()
-        initArtist()
+        getBiographyArtist()
     }
 
     private fun initProperties() {
@@ -56,12 +57,7 @@ class OtherInfoWindow : AppCompatActivity() {
         imageView = findViewById<View>(R.id.imageView) as ImageView
     }
 
-    private fun initDataBase(){
-        dataBase = DataBase(this)
-        setLastFMAPI()
-    }
-
-    private fun setLastFMAPI() {
+    private fun initLastFMAPI() {
         serviceApi = initRetrofit().create(LastFMAPI::class.java)
     }
 
@@ -70,7 +66,11 @@ class OtherInfoWindow : AppCompatActivity() {
         .addConverterFactory(ScalarsConverterFactory.create())
         .build()
 
-    private fun initArtist() {
+    private fun initDataBase(){
+        dataBase = DataBase(this)
+    }
+
+    private fun getBiographyArtist() {
         val artist = getArtist()
         getArtistInfo(artist)
     }
@@ -81,19 +81,25 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistInfo(artistName: String?) {
         Thread {
-            artistInfo(artistName)
+            updateArtistBiographyInDataBase(artistName)
         }.start()
     }
 
-    private fun artistInfo(artistName: String?) {
-        val artistBiography = createBiography(artistName)
+    private fun updateArtistBiographyInDataBase(artistName: String?) {
+        val artistBiography = checkBiographyArtistIsSaved(artistName)
         updateArtistImage()
         updateArtistBiography(artistBiography)
     }
 
-    private fun createBiography(artistName: String?): String {
-        val biographyText = dataBase.getInfo(artistName)
-        return if (biographyText != null) "$ASTERISK $biographyText" else getArtistBiographyFromLastFM(artistName)
+    private fun checkBiographyArtistIsSaved(artistName: String?): String {
+        var biographyText = dataBase.getInfo(artistName)
+        if (biographyText != null) {
+            biographyText = "$ASTERISK $biographyText"
+        } else {
+            biographyText = getArtistBiographyFromLastFM(artistName)
+            saveDataBase(artistName, biographyText)
+        }
+        return biographyText
     }
 
     private fun updateArtistImage() {
@@ -164,16 +170,10 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getArtistBiographyText(artistName: String?): String {
-        return  if (getBiographyExtract().isEmpty()) NO_RESULTS else updateArtistBiographyText(artistName)
+        return  if (getBiographyExtract().isEmpty()) NO_RESULTS else convertBiographyToHtml(artistName)
     }
 
-    private fun updateArtistBiographyText(artistName: String?): String {
-        return  convertBiographyToHtml(artistName).apply {
-            saveDataBase(artistName, this)
-        }
-    }
-
-    private fun convertBiographyToHtml(artistName: String?):String {
+    private fun convertBiographyTextToHtml(artistName: String?):String {
         return  textToHtml(replaceLineBreakToText(), artistName)
     }
 
