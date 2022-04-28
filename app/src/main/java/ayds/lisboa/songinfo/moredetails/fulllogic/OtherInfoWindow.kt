@@ -72,26 +72,26 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getBiographyArtist() {
         val artist = getArtist()
-        getArtistInfo(artist)
+        getArtistBiographyForOtherWindow(artist)
     }
 
     private fun getArtist(): String? {
         return intent.getStringExtra(ARTIST_NAME_EXTRA)
     }
 
-    private fun getArtistInfo(artistName: String?) {
+    private fun getArtistBiographyForOtherWindow(artistName: String?) {
         Thread {
-            updateArtistBiographyInDataBase(artistName)
+            getArtistBiographyAndUpdateUI(artistName)
         }.start()
     }
 
-    private fun updateArtistBiographyInDataBase(artistName: String?) {
-        val artistBiography = checkBiographyArtistIsSaved(artistName)
-        updateArtistImage()
-        updateArtistBiography(artistBiography)
+    private fun getArtistBiographyAndUpdateUI(artistName: String?) {
+        val artistBiography = getArtistInfo(artistName)
+        updateArtistUIImage()
+        updateArtistUIBiography(artistBiography)
     }
 
-    private fun checkBiographyArtistIsSaved(artistName: String?): String {
+    private fun getArtistInfo(artistName: String?): String {
         var biographyText = dataBase.getInfo(artistName)
         if (biographyText != null) {
             biographyText = "$ASTERISK $biographyText"
@@ -102,7 +102,7 @@ class OtherInfoWindow : AppCompatActivity() {
         return biographyText
     }
 
-    private fun updateArtistImage() {
+    private fun updateArtistUIImage() {
         runOnUiThread {
             updateArtistImageURL()
         }
@@ -112,7 +112,7 @@ class OtherInfoWindow : AppCompatActivity() {
         Picasso.get().load(IMAGE_URL_LASTFM).into(imageView)
     }
 
-    private fun updateArtistBiography(biographyText: String) {
+    private fun updateArtistUIBiography(biographyText: String) {
         runOnUiThread {
             biographyTextView.text = setTextHTML(biographyText)
         }
@@ -170,7 +170,7 @@ class OtherInfoWindow : AppCompatActivity() {
     }
 
     private fun getArtistBiographyText(artistName: String?): String {
-        return  if (getBiographyExtract().isEmpty()) NO_RESULTS else convertBiographyToHtml(artistName)
+        return  if (getBiographyExtract().isEmpty()) NO_RESULTS else convertBiographyTextToHtml(artistName)
     }
 
     private fun convertBiographyTextToHtml(artistName: String?):String {
