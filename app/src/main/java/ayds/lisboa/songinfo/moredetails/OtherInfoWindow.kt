@@ -1,4 +1,4 @@
-package ayds.lisboa.songinfo.moredetails.fulllogic
+package ayds.lisboa.songinfo.moredetails
 
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
