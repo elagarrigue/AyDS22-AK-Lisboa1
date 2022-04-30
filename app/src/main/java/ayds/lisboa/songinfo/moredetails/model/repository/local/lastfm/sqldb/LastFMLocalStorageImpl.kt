@@ -1,17 +1,19 @@
-package ayds.lisboa.songinfo.moredetails
+package ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb
 
-import android.database.sqlite.SQLiteOpenHelper
-import android.database.sqlite.SQLiteDatabase
 import android.content.ContentValues
+import android.database.sqlite.SQLiteOpenHelper
 import android.content.Context
 import android.database.Cursor
-import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.*
-import java.util.ArrayList
+import android.database.sqlite.SQLiteDatabase
+import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.LastFMLocalStorage
 
 private const val DATABASE_VERSION = 1
 private const val DATABASE_NAME = "dictionary.db"
 
-class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+internal class LastFMLocalStorageImpl(
+    context: Context,
+    private val cursorToLastFMArtistBiographyMapper: CursorToLastFMArtistBiographyMapper
+) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION), LastFMLocalStorage {
 
     private val projection = arrayOf(
         ID_COLUMN,
@@ -19,13 +21,13 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         INFO_COLUMN
     )
 
-    override fun onCreate(dataBase: SQLiteDatabase) {
-        dataBase.execSQL(createArtistTableQuery)
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(createArtistTableQuery)
     }
 
     override fun onUpgrade(dataBase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    fun saveArtist(artist: String?, info: String?) {
+    override fun saveArtist(artist: String?, info: String?) {
         writableDatabase?.insert(ARTIST_TABLE, null, createMapValues(artist, info))
     }
 
@@ -38,9 +40,9 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         return values
     }
 
-    fun getInfo(artist: String?): String? {
+    override fun getInfo(artist: String?): String? {
         val cursor = cursorDefinition(artist)
-        return cursorToFirstInfoMapper(cursor)
+        return cursorToLastFMArtistBiographyMapper.map(cursor)
     }
 
     private fun cursorDefinition(artist: String?): Cursor {
@@ -55,15 +57,4 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         )
     }
 
-    private fun cursorToFirstInfoMapper(cursor: Cursor): String? {
-        val items: MutableList<String> = ArrayList()
-        while (cursor.moveToNext()) {
-            val info = cursor.getString(
-                cursor.getColumnIndexOrThrow(INFO_COLUMN)
-            )
-            items.add(info)
-        }
-        cursor.close()
-        return items.firstOrNull()
-    }
 }

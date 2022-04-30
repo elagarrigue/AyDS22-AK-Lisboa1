@@ -48,7 +48,7 @@ class OtherInfoWindow : AppCompatActivity() {
         initProperties()
         initLastFMAPI()
         initDataBase()
-        getBiographyArtist()
+        getArtistBiography()
     }
 
     private fun initProperties() {
@@ -70,7 +70,7 @@ class OtherInfoWindow : AppCompatActivity() {
         dataBase = DataBase(this)
     }
 
-    private fun getBiographyArtist() {
+    private fun getArtistBiography() {
         val artist = getArtist()
         getArtistBiographyForOtherWindow(artist)
     }
