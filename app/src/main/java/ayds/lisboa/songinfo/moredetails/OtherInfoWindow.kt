@@ -130,7 +130,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun getArtistBiographyFromLastFM(artistName: String?): String {
         getArtistJSon(artistName)
-        setListenerUrlButton(getBiographyUrl())
+        setListenerUrlButton(getBiographyUrl()) //esta funcion esta en la vista
         return getArtistBiographyText(artistName)
     }
 
