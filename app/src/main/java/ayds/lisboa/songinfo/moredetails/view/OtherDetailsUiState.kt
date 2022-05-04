@@ -1,11 +1,12 @@
 package ayds.lisboa.songinfo.moredetails.view
 
-class OtherDetailsUiState (
-    val ImageUrlLastFM: String = IMAGE_URL_LASTFM, //TODO nombre significativo?
+data class OtherDetailsUiState (
     val viewFullArticleUrl: String = "",
-    val actionsEnabled: Boolean = false, //TODO es siempre necesario?
+    val artistBiographyText: String = "",
+    val actionsEnabled: Boolean = false,
 ) {
 
     companion object {
-        const val IMAGE_URL_LASTFM = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"    }
+        const val IMAGE_URL_SERVICE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
+    }
 }

@@ -4,7 +4,7 @@ import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
 import com.google.gson.JsonObject
 import com.google.gson.Gson
 
-interface LastFMToSongResolver {
+interface LastFMToArtistBiographyResolver {
     fun getArtistBiographyFromExternalData(serviceData:String?): LastFMArtistBiography?
 }
 
@@ -13,12 +13,12 @@ private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
 private const val ARTIST_BIOGRAPHY_URL = "url"
 
-internal class JsonToSongResolver(): LastFMToSongResolver {
+internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver {
 
     override fun getArtistBiographyFromExternalData(serviceData: String?): LastFMArtistBiography? =
         try {
             //serviceData?.getFirstItem()?.let { item ->
-            serviceData?.getItem()?.let { item ->
+            serviceData?.getItem()?.let { item ->   //TODO tendriamos que eliminar serviceData?
                 LastFMArtistBiography(
                     item.getArtist(), item.getBiography(), item.getExtract(), item.getUrl()
                 )

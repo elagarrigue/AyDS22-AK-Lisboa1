@@ -1,22 +1,25 @@
 package ayds.lisboa.songinfo.moredetails.model.entities
 
 interface ArtistBiography{
+    val id : String
     val artist: String
     val biography: String
-    val extract: String
     val url: String
+    var isLocallyStored: Boolean
 }
 
 data class LastFMArtistBiography(
+    override val id: String,
     override val artist: String,
     override val biography: String,
-    override val extract: String,
-    override val url: String
+    override val url: String,
+    override var isLocallyStored: Boolean = false
 ): ArtistBiography {}
 
 object EmptyArtistBiography : ArtistBiography {
+    override val id: String = ""
     override val artist: String = ""
     override val biography: String = ""
-    override val extract: String = ""
     override val url: String = ""
+    override var isLocallyStored: Boolean = false
 }

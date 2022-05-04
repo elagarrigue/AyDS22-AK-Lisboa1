@@ -14,12 +14,22 @@ import androidx.appcompat.app.AppCompatActivity
 import ayds.lisboa.songinfo.R
 import ayds.lisboa.songinfo.moredetails.ARTIST_NAME_EXTRA
 import ayds.lisboa.songinfo.moredetails.model.OtherDetailsModel
-import ayds.lisboa.songinfo.utils.UtilsInjector.navigationUtils //todo sospechoso
+import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
+import ayds.lisboa.songinfo.utils.UtilsInjector.navigationUtils
 import ayds.observer.Subject
 import ayds.observer.Observable
 import com.squareup.picasso.Picasso
 
-private const val IMAGE_URL_LASTFM = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
+import ayds.lisboa.songinfo.moredetails.model.repository.ArtistBiographyRepository
+import ayds.lisboa.songinfo.moredetails.model.repository.ArtistBiographyRepositoryImpl
+import ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm.*
+import ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm.LastFMServiceImpl
+import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.LastFMLocalStorage
+import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.CursorToLastFMArtistBiographyMapper
+import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.CursorToLastFMArtistBiographyMapperImpl
+import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.LastFMLocalStorageImpl
+
+private const val IMAGE_URL_SERVICE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
 
 interface OtherDetailsView {
     val uiEventObservable: Observable<OtherDetailsUiEvent>
@@ -30,10 +40,17 @@ interface OtherDetailsView {
 }
 
 class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
-
     private val onActionSubject = Subject<OtherDetailsUiEvent>()
     private lateinit var otherDetailsModel: OtherDetailsModel
 
+    private val lastFMToSongResolver : LastFMToArtistBiographyResolver = JsonToArtistBiographyResolver()
+    private val lastFMAPI : LastFMAPI = LastFMImpl().getLastFM()
+    private val cursorToLastFMArtistBiographyMapper: CursorToLastFMArtistBiographyMapper = CursorToLastFMArtistBiographyMapperImpl()
+    private val lastFMLocalStorage: LastFMLocalStorage = LastFMLocalStorageImpl(this, cursorToLastFMArtistBiographyMapper)
+    private val lastFMService: LastFMService = LastFMServiceImpl(lastFMToSongResolver,lastFMAPI)
+    private val repository : ArtistBiographyRepository = ArtistBiographyRepositoryImpl(lastFMLocalStorage,lastFMService)
+
+//  private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
     private lateinit var biographyTextView: TextView
     private lateinit var openUrlButton: Button
     private lateinit var imageView: ImageView
@@ -64,20 +81,20 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         getArtistBiographyForOtherWindow(artist)
     }
 
-    private fun getArtist(): String? {
-        return intent.getStringExtra(ARTIST_NAME_EXTRA)
+    private fun getArtist(): String {
+        return intent.getStringExtra(ARTIST_NAME_EXTRA)!! //TODO como lo hacemos? :D
     }
 
-    private fun getArtistBiographyForOtherWindow(artistName: String?) {
+    private fun getArtistBiographyForOtherWindow(artistName: String) {
         Thread {
             getArtistBiographyAndUpdateUI(artistName)
         }.start()
     }
 
-    private fun getArtistBiographyAndUpdateUI(artistName: String?) {
-        val artistBiography = getArtistInfo(artistName) //TODO
+    private fun getArtistBiographyAndUpdateUI(artistName: String) {
+        val artistBiography = repository.getArtistInfo(artistName) //TODO
         updateArtistUIImage()
-        updateArtistUIBiography(artistBiography)
+        updateArtistUIBiography(artistBiography.biography)
     }
 
     private fun updateArtistUIImage() {
@@ -87,7 +104,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateArtistImageURL() {
-        Picasso.get().load(IMAGE_URL_LASTFM).into(imageView)
+        Picasso.get().load(IMAGE_URL_SERVICE).into(imageView)
     }
 
     private fun updateArtistUIBiography(biographyText: String) {
@@ -123,7 +140,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun replaceLineBreakToText(): String{
-        return getBiographyExtract().replace("\\n", "\n") //esto va a venir del modelo o controlador
+        return lastFMToSongResolver.getArtistBiographyFromExternalData().biography.replace("\\n", "\n") //esto va a venir del modelo o controlador
         //TODO
     }
 
@@ -144,10 +161,19 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         }
     }
 
+    private fun updateArtistBiographyUiState(artist : LastFMArtistBiography) {
+        uiState = uiState.copy(
+            viewFullArticleUrl = artist.url,
+            artistBiographyText = biographyDescriptionHelper.getArtistBiographyText(artist),
+            actionsEnabled = true
+        )
+    }
 
-
-
-
-
-
+    private fun updateNoResultsUiState() {
+        uiState = uiState.copy(
+            viewFullArticleUrl = "",
+            artistBiographyText = biographyDescriptionHelper.getArtistBiographyText(),
+            actionsEnabled = false
+        )
+    }
 }

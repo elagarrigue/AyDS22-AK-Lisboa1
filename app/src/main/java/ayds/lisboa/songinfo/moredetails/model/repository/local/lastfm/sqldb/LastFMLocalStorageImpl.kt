@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
 import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.LastFMLocalStorage
 
 private const val DATABASE_VERSION = 1
@@ -27,20 +28,21 @@ internal class LastFMLocalStorageImpl(
 
     override fun onUpgrade(dataBase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    override fun saveArtist(artist: String?, info: String?) {
-        writableDatabase?.insert(ARTIST_TABLE, null, createMapValues(artist, info))
+    override fun saveArtist(artistBiography: LastFMArtistBiography) {
+        writableDatabase?.insert(ARTIST_TABLE, null, createMapValues(artistBiography))
     }
 
-    private fun createMapValues(artist: String?, info: String?): ContentValues {
+    private fun createMapValues(artistBiography : LastFMArtistBiography): ContentValues {
         val values = ContentValues().apply {
-            put(ARTIST_COLUMN, artist)
-            put(INFO_COLUMN, info)
+            put(ID_COLUMN, artistBiography.id)
+            put(ARTIST_COLUMN, artistBiography.artist)
+            put(INFO_COLUMN, artistBiography.biography)
             put(SOURCE_COLUMN, 1)
         }
         return values
     }
 
-    override fun getInfo(artist: String?): String? {
+    override fun getInfo(artist: String): LastFMArtistBiography? {
         val cursor = cursorDefinition(artist)
         return cursorToLastFMArtistBiographyMapper.map(cursor)
     }

@@ -21,10 +21,11 @@ import retrofit2.Response
 import java.io.IOException
 import java.lang.StringBuilder
 import android.widget.Button
+import ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm.LastFMAPI
 
 const val ARTIST_NAME_EXTRA = "artistName"
 private const val LASTFM_API = "https://ws.audioscrobbler.com/2.0/"
-private const val IMAGE_URL_LASTFM = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
+private const val IMAGE_URL_SERVICE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
 private const val ARTIST = "artist"
 private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
@@ -45,13 +46,13 @@ class OtherInfoWindow : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
 
-        initProperties()
+        initProperties() //OtherDetailsView
         initLastFMAPI()
         initDataBase()
-        getArtistBiography()
+        getArtistBiography() //OtherDetailsView
     }
 
-    private fun initProperties() {
+    private fun initProperties() { //OtherDetailsView
         biographyTextView = findViewById(R.id.biographyTextView)
         openUrlButton = findViewById<View>(R.id.openUrlButton) as Button
         imageView = findViewById<View>(R.id.imageView) as ImageView
@@ -70,21 +71,23 @@ class OtherInfoWindow : AppCompatActivity() {
         dataBase = DataBase(this)
     }
 
-    private fun getArtistBiography() {
+    private fun getArtistBiography() { //OtherDetailsView
         val artist = getArtist()
         getArtistBiographyForOtherWindow(artist)
     }
 
-    private fun getArtist(): String? {
+    private fun getArtist(): String? { //OtherDetailsView
         return intent.getStringExtra(ARTIST_NAME_EXTRA)
     }
 
+    //OtherDetailsView
     private fun getArtistBiographyForOtherWindow(artistName: String?) {
         Thread {
             getArtistBiographyAndUpdateUI(artistName)
         }.start()
     }
 
+    //OtherDetailsView
     private fun getArtistBiographyAndUpdateUI(artistName: String?) {
         val artistBiography = getArtistInfo(artistName)
         updateArtistUIImage()
@@ -102,22 +105,24 @@ class OtherInfoWindow : AppCompatActivity() {
         return biographyText
     }
 
-    private fun updateArtistUIImage() {
+    private fun updateArtistUIImage() { //OtherDetailsView
         runOnUiThread {
             updateArtistImageURL()
         }
     }
 
-    private fun updateArtistImageURL() {
-        Picasso.get().load(IMAGE_URL_LASTFM).into(imageView)
+    private fun updateArtistImageURL() { //OtherDetailsView
+        Picasso.get().load(IMAGE_URL_SERVICE).into(imageView)
     }
 
+    //OtherDetailsView
     private fun updateArtistUIBiography(biographyText: String) {
         runOnUiThread {
             biographyTextView.text = setTextHTML(biographyText)
         }
     }
 
+    //OtherDetailsView
     private fun setTextHTML(html: String): Spanned {
         val result: Spanned =
             if (VERSION.SDK_INT >= VERSION_CODES.N) {
@@ -157,12 +162,14 @@ class OtherInfoWindow : AppCompatActivity() {
         return artist[ARTIST_BIOGRAPHY_URL].asString
     }
 
+    //OtherDetailsView
     private fun setListenerUrlButton(urlBiography: String) {
         openUrlButton.setOnClickListener {
             navigateToUrl(urlBiography)
         }
     }
 
+    //OtherDetailsView
     private fun navigateToUrl(urlBiography: String) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(urlBiography)
@@ -173,10 +180,12 @@ class OtherInfoWindow : AppCompatActivity() {
         return  if (getBiographyExtract().isEmpty()) NO_RESULTS else convertBiographyTextToHtml(artistName)
     }
 
+    //OtherDetailsView
     private fun convertBiographyTextToHtml(artistName: String?):String {
         return  textToHtml(replaceLineBreakToText(), artistName)
     }
 
+    //OtherDetailsView
     private fun replaceLineBreakToText(): String{
         return getBiographyExtract().replace("\\n", "\n")
     }
@@ -185,6 +194,7 @@ class OtherInfoWindow : AppCompatActivity() {
         dataBase.saveArtist(artistName, biographyText)
     }
 
+    //OtherDetailsView
     private fun textToHtml(text: String, term: String?): String {
         return  StringBuilder().apply {
             append("<html><div width=400>")
@@ -194,6 +204,7 @@ class OtherInfoWindow : AppCompatActivity() {
         }.toString()
     }
 
+    //OtherDetailsView
     private fun artistBiographyTextWithBold(text: String, term: String?): String {
         return text.apply {
             replace("'", " ")
