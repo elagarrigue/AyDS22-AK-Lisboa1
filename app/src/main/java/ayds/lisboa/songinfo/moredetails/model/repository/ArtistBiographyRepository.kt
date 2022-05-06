@@ -37,4 +37,5 @@ internal class ArtistBiographyRepositoryImpl(
     private fun markArtistBiographyAsLocal(artistBiography: ArtistBiography) {
         artistBiography.isLocallyStored = true
     }
+
 }

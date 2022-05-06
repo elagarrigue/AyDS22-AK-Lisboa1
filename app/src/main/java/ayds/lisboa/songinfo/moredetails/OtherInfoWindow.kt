@@ -54,7 +54,7 @@ class OtherInfoWindow : AppCompatActivity() {
 
     private fun initProperties() { //OtherDetailsView
         biographyTextView = findViewById(R.id.biographyTextView)
-        openUrlButton = findViewById<View>(R.id.openUrlButton) as Button
+        openUrlButton = findViewById<View>(R.id.viewFullArticleButton) as Button
         imageView = findViewById<View>(R.id.imageView) as ImageView
     }
 

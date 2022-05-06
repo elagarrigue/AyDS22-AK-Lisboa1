@@ -6,12 +6,14 @@ import ayds.lisboa.songinfo.moredetails.view.OtherDetailsView
 import ayds.observer.Observer
 
 interface OtherDetailsController {
+
     fun setOtherDetailsView(otherDetailsView: OtherDetailsView)
+
 }
 
 internal class OtherDetailsControllerImpl (
     private val otherDetailsModel: OtherDetailsModel
-        ) : OtherDetailsController {
+    ) : OtherDetailsController {
 
     private lateinit var otherDetailsView: OtherDetailsView
 
@@ -23,13 +25,19 @@ internal class OtherDetailsControllerImpl (
     private val observer: Observer<OtherDetailsUiEvent> =
         Observer { value ->
             when (value) {
-               is OtherDetailsUiEvent.ViewFullArticleUrl -> viewFullArticleUrl() //TODO
+                OtherDetailsUiEvent.SearchBiography -> searchBiography()
+               is OtherDetailsUiEvent.OpenBiographyArticleUrl -> openBiographyArticleUrl()
             }
         }
 
-    private fun viewFullArticleUrl() {
-        otherDetailsView.openExternalLink(otherDetailsView.uiState.viewFullArticleUrl) //TODO
-        //openExternalLink esta en otherDetailsView
+    private fun searchBiography(){
+        Thread {
+            otherDetailsModel.searchBiography(otherDetailsView.uiState.artistBiographyText)
+        }.start()
+    }
+
+    private fun openBiographyArticleUrl() {
+        otherDetailsView.openExternalLink(otherDetailsView.uiState.viewFullArticleUrl)
     }
 
 }

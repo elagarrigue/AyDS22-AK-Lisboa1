@@ -7,6 +7,7 @@ import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
 interface BiographyDescriptionHelper {
     fun getArtistBiographyText(artistBiography: ArtistBiography = EmptyArtistBiography) : String
 }
+
 internal class BiographyDescriptionHelperImpl() : BiographyDescriptionHelper{
     override fun getArtistBiographyText(artistBiography: ArtistBiography): String {
         return when (artistBiography) {

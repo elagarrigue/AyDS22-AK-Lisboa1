@@ -19,7 +19,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/openUrlButton"
+        app:layout_constraintBottom_toTopOf="@id/viewFullArticleButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageView"
@@ -38,7 +38,7 @@
 
 
     <Button
-        android:id="@+id/openUrlButton"
+        android:id="@+id/viewFullArticleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

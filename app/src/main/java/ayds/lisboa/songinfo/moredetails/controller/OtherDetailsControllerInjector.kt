@@ -1,4 +1,12 @@
 package ayds.lisboa.songinfo.moredetails.controller
 
-class OtherDetailsControllerInjector {
+import ayds.lisboa.songinfo.moredetails.model.OtherDetailsModelInjector
+import ayds.lisboa.songinfo.moredetails.view.OtherDetailsView
+
+object OtherDetailsControllerInjector {
+    fun onViewStarted(otherDetailsView: OtherDetailsView) {
+        OtherDetailsControllerImpl(OtherDetailsModelInjector.getOtherDetailsModel()).apply {
+            setOtherDetailsView(otherDetailsView)
+        }
+    }
 }

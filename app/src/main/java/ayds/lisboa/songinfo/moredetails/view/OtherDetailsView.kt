@@ -14,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import ayds.lisboa.songinfo.R
 import ayds.lisboa.songinfo.moredetails.ARTIST_NAME_EXTRA
 import ayds.lisboa.songinfo.moredetails.model.OtherDetailsModel
+import ayds.lisboa.songinfo.moredetails.model.OtherDetailsModelInjector
+import ayds.lisboa.songinfo.moredetails.model.entities.ArtistBiography
+import ayds.lisboa.songinfo.moredetails.model.entities.EmptyArtistBiography
 import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
-import ayds.lisboa.songinfo.utils.UtilsInjector.navigationUtils
 import ayds.observer.Subject
 import ayds.observer.Observable
 import com.squareup.picasso.Picasso
@@ -28,6 +30,8 @@ import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.LastFMLoca
 import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.CursorToLastFMArtistBiographyMapper
 import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.CursorToLastFMArtistBiographyMapperImpl
 import ayds.lisboa.songinfo.moredetails.model.repository.local.lastfm.sqldb.LastFMLocalStorageImpl
+import ayds.lisboa.songinfo.utils.UtilsInjector
+import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
 
 private const val IMAGE_URL_SERVICE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
 
@@ -40,19 +44,23 @@ interface OtherDetailsView {
 }
 
 class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
+
     private val onActionSubject = Subject<OtherDetailsUiEvent>()
     private lateinit var otherDetailsModel: OtherDetailsModel
+    private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
+    private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
 
-    private val lastFMToSongResolver : LastFMToArtistBiographyResolver = JsonToArtistBiographyResolver()
+
+    private val lastFMToArtistBiographyResolver : LastFMToArtistBiographyResolver = JsonToArtistBiographyResolver()
     private val lastFMAPI : LastFMAPI = LastFMImpl().getLastFM()
     private val cursorToLastFMArtistBiographyMapper: CursorToLastFMArtistBiographyMapper = CursorToLastFMArtistBiographyMapperImpl()
     private val lastFMLocalStorage: LastFMLocalStorage = LastFMLocalStorageImpl(this, cursorToLastFMArtistBiographyMapper)
-    private val lastFMService: LastFMService = LastFMServiceImpl(lastFMToSongResolver,lastFMAPI)
+    private val lastFMService: LastFMService = LastFMServiceImpl(lastFMToArtistBiographyResolver,lastFMAPI)
     private val repository : ArtistBiographyRepository = ArtistBiographyRepositoryImpl(lastFMLocalStorage,lastFMService)
 
-//  private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
+
     private lateinit var biographyTextView: TextView
-    private lateinit var openUrlButton: Button
+    private lateinit var viewFullArticleButton: Button
     private lateinit var imageView: ImageView
 
     override val uiEventObservable: Observable<OtherDetailsUiEvent> = onActionSubject
@@ -62,8 +70,17 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_info)
 
+        initModule()
         initProperties()
-        getArtistBiography()
+        initListeners()
+        initObservers()
+        updateArtistUIImage()
+        getArtistBiography() //TODO es necesario?
+    }
+
+    private fun initModule() {
+        OtherDetailsViewInjector.init(this)
+        otherDetailsModel = OtherDetailsModelInjector.getOtherDetailsModel()
     }
 
     override fun openExternalLink(url: String) {
@@ -72,8 +89,52 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private fun initProperties() {
         biographyTextView = findViewById(R.id.biographyTextView)
-        openUrlButton = findViewById<View>(R.id.openUrlButton) as Button
+        viewFullArticleButton = findViewById<View>(R.id.viewFullArticleButton) as Button
         imageView = findViewById<View>(R.id.imageView) as ImageView
+    }
+
+    private fun initListeners(){
+        viewFullArticleButton.setOnClickListener { notifyOpenBiographyArticleUrl() }
+    }
+
+    private fun notifyOpenBiographyArticleUrl(){
+        onActionSubject.notify(OtherDetailsUiEvent.OpenBiographyArticleUrl)
+    }
+
+    private fun initObservers() {
+        otherDetailsModel.artistObservable
+            .subscribe { value -> updateArtistBiographyInfo(value) }
+    }
+
+    private fun updateArtistBiographyInfo(artistBiography: ArtistBiography) {
+        updateUiState(artistBiography)
+        updateArtistBiographyDescription()
+        updateArtistUIImage()//TODO Es necesario llamar al metodo otra vez? Ya se llama en el constructor
+        updateViewFullArticleState()
+
+    }
+
+    private fun updateUiState(artistBiography: ArtistBiography) {
+        when (artistBiography) {
+            is LastFMArtistBiography -> updateArtistBiographyUiState(artistBiography)
+            EmptyArtistBiography -> updateNoResultsUiState()
+        }
+    }
+
+    private fun updateArtistBiographyDescription(){
+        runOnUiThread {
+            biographyTextView.text = uiState.artistBiographyText
+        }
+    }
+
+    private fun updateViewFullArticleState(){
+        enableActions(uiState.actionsEnabled)
+    }
+
+    private fun enableActions(enable: Boolean) {
+        runOnUiThread {
+            viewFullArticleButton.isEnabled = enable
+        }
     }
 
     private fun getArtistBiography() {
@@ -85,17 +146,17 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         return intent.getStringExtra(ARTIST_NAME_EXTRA)!! //TODO como lo hacemos? :D
     }
 
-    private fun getArtistBiographyForOtherWindow(artistName: String) {
-        Thread {
-            getArtistBiographyAndUpdateUI(artistName)
-        }.start()
-    }
+        private fun getArtistBiographyForOtherWindow(artistName: String) {
+            Thread {
+                getArtistBiographyAndUpdateUI(artistName)
+            }.start()
+        }
 
-    private fun getArtistBiographyAndUpdateUI(artistName: String) {
-        val artistBiography = repository.getArtistInfo(artistName) //TODO
-        updateArtistUIImage()
-        updateArtistUIBiography(artistBiography.biography)
-    }
+        private fun getArtistBiographyAndUpdateUI(artistName: String) {
+            val artistBiography = repository.getArtistInfo(artistName) //TODO
+
+            updateArtistUIBiography(artistBiography.biography)
+        }
 
     private fun updateArtistUIImage() {
         runOnUiThread {
@@ -124,7 +185,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun setListenerUrlButton(urlBiography: String) {
-        openUrlButton.setOnClickListener {
+        viewFullArticleButton.setOnClickListener {
             navigateToUrl(urlBiography)
         }
     }
@@ -133,32 +194,6 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(urlBiography)
         startActivity(intent)
-    }
-
-    private fun convertBiographyTextToHtml(artistName: String?):String {
-        return  textToHtml(replaceLineBreakToText(), artistName)
-    }
-
-    private fun replaceLineBreakToText(): String{
-        return lastFMToSongResolver.getArtistBiographyFromExternalData().biography.replace("\\n", "\n") //esto va a venir del modelo o controlador
-        //TODO
-    }
-
-    private fun textToHtml(text: String, term: String?): String {
-        return  StringBuilder().apply {
-            append("<html><div width=400>")
-            append("<font face=\"arial\">")
-            append(artistBiographyTextWithBold(text, term))
-            append("</font></div></html>")
-        }.toString()
-    }
-
-    private fun artistBiographyTextWithBold(text: String, term: String?): String {
-        return text.apply {
-            replace("'", " ")
-            replace("\n", "<br>")
-            replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
-        }
     }
 
     private fun updateArtistBiographyUiState(artist : LastFMArtistBiography) {

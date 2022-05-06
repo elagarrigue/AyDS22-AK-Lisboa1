@@ -1,6 +1,8 @@
 package ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm
 
 import ayds.lisboa.songinfo.moredetails.model.entities.LastFMArtistBiography
+import ayds.lisboa.songinfo.utils.UtilsInjector
+import ayds.lisboa.songinfo.utils.view.ConvertStringToHTML
 import com.google.gson.JsonObject
 import com.google.gson.Gson
 
@@ -12,15 +14,16 @@ private const val ARTIST = "artist"
 private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
 private const val ARTIST_BIOGRAPHY_URL = "url"
+private const val NO_RESULTS = "no result"
 
 internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver {
 
     override fun getArtistBiographyFromExternalData(serviceData: String?): LastFMArtistBiography? =
         try {
             //serviceData?.getFirstItem()?.let { item ->
-            serviceData?.getItem()?.let { item ->   //TODO tendriamos que eliminar serviceData?
+            serviceData?.getItem()?.let { item ->   //TODO asegurarse que serviceData sea el artistName
                 LastFMArtistBiography(
-                    item.getArtist(), item.getBiography(), item.getExtract(), item.getUrl()
+                    item.getArtist(), item.getBiography(), item.getExtract(serviceData), item.getUrl()
                 )
             }
         } catch (e: Exception) {
@@ -50,14 +53,17 @@ internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver 
         return bio.asString
     }
 
-    private fun JsonObject.getExtract(): String {
+    private fun JsonObject.getExtract(artistName: String?): String {
         val bio = this[ARTIST_BIOGRAPHY].asJsonObject
-        return bio[ARTIST_BIOGRAPHY_EXTRACT].asString
+        val extract = bio[ARTIST_BIOGRAPHY_EXTRACT].asString
+        val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
+        return if (extract.isEmpty()) NO_RESULTS else convert.convertTextToHtml(extract,artistName)
     }
 
     private fun JsonObject.getUrl(): String {
         val artist = this[ARTIST].asJsonObject
         return artist[ARTIST_BIOGRAPHY_URL].asString
     }
+
 }
 
