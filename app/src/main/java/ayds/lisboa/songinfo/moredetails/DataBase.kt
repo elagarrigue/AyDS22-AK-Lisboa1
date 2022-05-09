@@ -1,4 +1,4 @@
-package ayds.lisboa.songinfo.moredetails
+/*package ayds.lisboa.songinfo.moredetails
 
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
@@ -67,3 +67,4 @@ class DataBase(context: Context?) : SQLiteOpenHelper(context, DATABASE_NAME, nul
         return items.firstOrNull()
     }
 }
+ */

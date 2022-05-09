@@ -1,6 +1,5 @@
 package ayds.lisboa.songinfo.moredetails.model
 
-import ayds.lisboa.songinfo.home.model.entities.Song
 import ayds.lisboa.songinfo.moredetails.model.entities.ArtistBiography
 import ayds.lisboa.songinfo.moredetails.model.repository.ArtistBiographyRepository
 import ayds.observer.Observable

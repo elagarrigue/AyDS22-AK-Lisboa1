@@ -1,3 +1,4 @@
+/*
 package ayds.lisboa.songinfo.moredetails
 
 import androidx.appcompat.app.AppCompatActivity
@@ -213,3 +214,4 @@ class OtherInfoWindow : AppCompatActivity() {
         }
     }
 }
+*/
