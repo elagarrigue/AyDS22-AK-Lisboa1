@@ -1,7 +1,5 @@
 package ayds.lisboa.songinfo.utils.view
 
-import ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm.LastFMService
-
 interface ConvertStringToHTML {
 
     fun convertTextToHtml(artistBio: String,artistName: String?): String

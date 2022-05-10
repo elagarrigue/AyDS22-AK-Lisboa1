@@ -1,6 +1,5 @@
 package ayds.lisboa.songinfo.utils
 
-import ayds.lisboa.songinfo.moredetails.model.repository.external.lastfm.LastFMArtistInjector
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtilsImpl
 import ayds.lisboa.songinfo.utils.view.*

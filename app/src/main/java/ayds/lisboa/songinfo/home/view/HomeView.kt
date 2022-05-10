@@ -16,8 +16,8 @@ import ayds.lisboa.songinfo.home.model.entities.EmptySong
 import ayds.lisboa.songinfo.home.model.entities.Song
 import ayds.lisboa.songinfo.home.model.entities.SpotifySong
 import ayds.lisboa.songinfo.home.view.HomeUiState.Companion.DEFAULT_IMAGE
-import ayds.lisboa.songinfo.moredetails.view.ARTIST_NAME_EXTRA
-import ayds.lisboa.songinfo.moredetails.view.OtherDetailsViewActivity
+import ayds.lisboa.songinfo.otherdetails.view.ARTIST_NAME_EXTRA
+import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsViewActivity
 import ayds.lisboa.songinfo.utils.UtilsInjector
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
 import ayds.lisboa.songinfo.utils.view.ImageLoader
