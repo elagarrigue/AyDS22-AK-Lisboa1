@@ -2,13 +2,13 @@ package ayds.lisboa.songinfo.utils.view
 
 interface ConvertStringToHTML {
 
-    fun convertTextToHtml(artistBio: String,artistName: String?): String
+    fun convertTextToHtml(artistBio: String,artistName: String): String
 }
 
 internal class ConvertStringToHTMLImpl() : ConvertStringToHTML {
 
 
-    override fun convertTextToHtml(artistBio: String,artistName: String?):String {
+    override fun convertTextToHtml(artistBio: String,artistName: String):String {
         return  textToHtml(replaceLineBreakToText(artistBio), artistName)
     }
 
@@ -16,7 +16,7 @@ internal class ConvertStringToHTMLImpl() : ConvertStringToHTML {
         return artistBio.replace("\\n", "\n")
     }
 
-    private fun textToHtml(text: String, term: String?): String {
+    private fun textToHtml(text: String, term: String): String {
         return  StringBuilder().apply {
             append("<html><div width=400>")
             append("<font face=\"arial\">")
@@ -25,11 +25,11 @@ internal class ConvertStringToHTMLImpl() : ConvertStringToHTML {
         }.toString()
     }
 
-    private fun artistBiographyTextWithBold(text: String, term: String?): String {
+    private fun artistBiographyTextWithBold(text: String, term: String): String {
         return text.apply {
             replace("'", " ")
             replace("\n", "<br>")
-            replace("(?i)" + term!!.toRegex(), "<b>" + term.uppercase() + "</b>")
+            replace("(?i)" + term.toRegex(), "<b>" + term.uppercase() + "</b>")
         }
     }
 }

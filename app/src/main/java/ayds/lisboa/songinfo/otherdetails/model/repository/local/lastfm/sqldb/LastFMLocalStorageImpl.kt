@@ -17,9 +17,9 @@ internal class LastFMLocalStorageImpl(
 ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION), LastFMLocalStorage {
 
     private val projection = arrayOf(
-        ID_COLUMN,
         ARTIST_COLUMN,
-        INFO_COLUMN
+        INFO_COLUMN,
+        SOURCE_COLUMN
     )
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -34,7 +34,6 @@ internal class LastFMLocalStorageImpl(
 
     private fun createMapValues(artistBiography : LastFMArtistBiography): ContentValues {
         val values = ContentValues().apply {
-            put(ID_COLUMN, artistBiography.id)
             put(ARTIST_COLUMN, artistBiography.artist)
             put(INFO_COLUMN, artistBiography.biography)
             put(SOURCE_COLUMN, 1)

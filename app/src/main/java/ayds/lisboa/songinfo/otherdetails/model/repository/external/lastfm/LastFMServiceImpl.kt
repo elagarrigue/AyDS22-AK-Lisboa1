@@ -11,7 +11,9 @@ internal class LastFMServiceImpl (
         val callResponse = getArtistBioFromService(artist)
         return lastFMToArtistBiographyResolver.getArtistBiographyFromExternalData(callResponse.body())
     }
-    private fun getArtistBioFromService(artist: String): Response<String> {
-        return lastFMAPI.getArtistInfo(artist).execute()
+    private fun getArtistBioFromService(artist: String): Response<String?> {
+        val result = lastFMAPI.getArtistInfo(artist)
+
+        return result?.execute() ?: throw Exception("Api is null")
     }
 }

@@ -11,19 +11,19 @@ interface LastFMToArtistBiographyResolver {
 }
 
 private const val ARTIST = "artist"
+private const val ARTIST_NAME = "name"
 private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
 private const val ARTIST_BIOGRAPHY_URL = "url"
-private const val NO_RESULTS = "no result"
+private const val NO_RESULTS = "No results"
 
 internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver {
 
     override fun getArtistBiographyFromExternalData(serviceData: String?): LastFMArtistBiography? =
         try {
-            //serviceData?.getFirstItem()?.let { item ->
-            serviceData?.getItem()?.let { item ->   //TODO asegurarse que serviceData sea el artistName
+            serviceData?.getItem()?.let { item ->
                 LastFMArtistBiography(
-                    item.getArtist(), item.getBiography(), item.getExtract(serviceData), item.getUrl()
+                    item.getArtist(), item.getBiography(),  item.getUrl()
                 )
             }
         } catch (e: Exception) {
@@ -32,37 +32,24 @@ internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver 
 
     private fun String?.getItem(): JsonObject {
         val jobj = Gson().fromJson(this, JsonObject::class.java)
-        return jobj.asJsonObject
+        return jobj[ARTIST].asJsonObject
     }
 
-    /*private fun String?.getFirstItem(): JsonObject {
-        val jobj = Gson().fromJson(this, JsonObject::class.java)
-        val artists = jobj[ARTIST].asJsonObject
-        val items = artists[ITEMS].asJsonArray
-        return items[0].asJsonObject
-    }
-    */
 
     private fun JsonObject.getArtist(): String {
-        val artist = this[ARTIST].asJsonObject
-        return artist.asString
+        return this[ARTIST_NAME].asString
     }
 
     private fun JsonObject.getBiography(): String {
         val bio = this[ARTIST_BIOGRAPHY].asJsonObject
-        return bio.asString
-    }
-
-    private fun JsonObject.getExtract(artistName: String?): String {
-        val bio = this[ARTIST_BIOGRAPHY].asJsonObject
         val extract = bio[ARTIST_BIOGRAPHY_EXTRACT].asString
         val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
+        val artistName = this[ARTIST_NAME].asString
         return if (extract.isEmpty()) NO_RESULTS else convert.convertTextToHtml(extract,artistName)
     }
 
     private fun JsonObject.getUrl(): String {
-        val artist = this[ARTIST].asJsonObject
-        return artist[ARTIST_BIOGRAPHY_URL].asString
+        return this[ARTIST_BIOGRAPHY_URL].asString
     }
 
 }

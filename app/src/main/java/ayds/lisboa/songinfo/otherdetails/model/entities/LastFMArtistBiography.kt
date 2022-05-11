@@ -1,7 +1,6 @@
 package ayds.lisboa.songinfo.otherdetails.model.entities
 
 interface ArtistBiography{
-    val id : String
     val artist: String
     val biography: String
     val url: String
@@ -9,7 +8,6 @@ interface ArtistBiography{
 }
 
 data class LastFMArtistBiography(
-    override val id: String,
     override val artist: String,
     override val biography: String,
     override val url: String,
@@ -17,7 +15,6 @@ data class LastFMArtistBiography(
 ): ArtistBiography {}
 
 object EmptyArtistBiography : ArtistBiography {
-    override val id: String = ""
     override val artist: String = ""
     override val biography: String = ""
     override val url: String = ""

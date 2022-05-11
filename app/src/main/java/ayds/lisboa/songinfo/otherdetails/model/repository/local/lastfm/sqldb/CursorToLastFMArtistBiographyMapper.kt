@@ -16,7 +16,6 @@ internal class CursorToLastFMArtistBiographyMapperImpl : CursorToLastFMArtistBio
             with(cursor) {
                 if (moveToNext()) {
                     LastFMArtistBiography(
-                        id = getString(getColumnIndexOrThrow(ID_COLUMN)),
                         artist = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
                         biography = getString(getColumnIndexOrThrow(INFO_COLUMN)),
                         url = getString(getColumnIndexOrThrow(SOURCE_COLUMN)),
@@ -30,14 +29,3 @@ internal class CursorToLastFMArtistBiographyMapperImpl : CursorToLastFMArtistBio
             null
         }
     }
-        /*
-       val items: MutableList<String> = ArrayList()
-       while (cursor.moveToNext()) {
-           val info = cursor.getString(
-               cursor.getColumnIndexOrThrow(INFO_COLUMN)
-           )
-           items.add(info)
-       }
-       cursor.close()
-       return items.firstOrNull()
-        */
