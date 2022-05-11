@@ -6,11 +6,9 @@ import ayds.observer.Observable
 import ayds.observer.Subject
 
 interface OtherDetailsModel {
-
     val artistObservable: Observable<ArtistBiography>
 
     fun searchBiography(artistName: String)
-
 }
 
 internal class OtherDetailsModelImpl(private val repository: ArtistBiographyRepository) : OtherDetailsModel{

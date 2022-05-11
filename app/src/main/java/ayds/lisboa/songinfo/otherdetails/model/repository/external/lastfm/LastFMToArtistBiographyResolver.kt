@@ -1,8 +1,6 @@
 package ayds.lisboa.songinfo.otherdetails.model.repository.external.lastfm
 
 import ayds.lisboa.songinfo.otherdetails.model.entities.LastFMArtistBiography
-import ayds.lisboa.songinfo.utils.UtilsInjector
-import ayds.lisboa.songinfo.utils.view.ConvertStringToHTML
 import com.google.gson.JsonObject
 import com.google.gson.Gson
 
@@ -15,7 +13,6 @@ private const val ARTIST_NAME = "name"
 private const val ARTIST_BIOGRAPHY = "bio"
 private const val ARTIST_BIOGRAPHY_EXTRACT = "content"
 private const val ARTIST_BIOGRAPHY_URL = "url"
-private const val NO_RESULTS = "No results"
 
 internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver {
 
@@ -42,10 +39,7 @@ internal class JsonToArtistBiographyResolver(): LastFMToArtistBiographyResolver 
 
     private fun JsonObject.getBiography(): String {
         val bio = this[ARTIST_BIOGRAPHY].asJsonObject
-        val extract = bio[ARTIST_BIOGRAPHY_EXTRACT].asString
-        val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
-        val artistName = this[ARTIST_NAME].asString
-        return if (extract.isEmpty()) NO_RESULTS else convert.convertTextToHtml(extract,artistName)
+        return bio[ARTIST_BIOGRAPHY_EXTRACT].asString
     }
 
     private fun JsonObject.getUrl(): String {

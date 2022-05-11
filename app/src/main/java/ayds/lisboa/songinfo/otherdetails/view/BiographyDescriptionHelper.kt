@@ -23,7 +23,11 @@ internal class BiographyDescriptionHelperImpl() : BiographyDescriptionHelper{
                     else
                         NOT_LOCALLY_STORED
                 }\n" +
-                "${artistBiography.biography}"
+                        if(artistBiography.biography.isEmpty()){
+                            NO_RESULTS
+                        }else{
+                            "${artistBiography.biography}"
+                        }
             else -> NO_RESULTS
         }
     }

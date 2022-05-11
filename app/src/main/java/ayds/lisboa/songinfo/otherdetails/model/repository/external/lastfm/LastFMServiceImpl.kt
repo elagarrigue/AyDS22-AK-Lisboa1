@@ -11,6 +11,7 @@ internal class LastFMServiceImpl (
         val callResponse = getArtistBioFromService(artist)
         return lastFMToArtistBiographyResolver.getArtistBiographyFromExternalData(callResponse.body())
     }
+
     private fun getArtistBioFromService(artist: String): Response<String?> {
         val result = lastFMAPI.getArtistInfo(artist)
 

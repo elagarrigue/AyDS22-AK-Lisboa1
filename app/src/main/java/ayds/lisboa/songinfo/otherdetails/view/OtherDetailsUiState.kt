@@ -6,7 +6,6 @@ data class OtherDetailsUiState (
     val artistBiographyText: String = "",
     val actionsEnabled: Boolean = false,
 ) {
-    //TODO image aparece como no utilizada
     companion object {
         const val IMAGE_URL_SERVICE = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lastfm_logo.svg/320px-Lastfm_logo.svg.png"
     }

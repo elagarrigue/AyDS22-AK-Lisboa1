@@ -21,7 +21,7 @@ internal class ArtistBiographyRepositoryImpl(
             artistBiography != null -> markArtistBiographyAsLocal(artistBiography)
             else -> {
                 try{
-                    artistBiography = lastFMService.getArtistBio(artistName) //todo
+                    artistBiography = lastFMService.getArtistBio(artistName)
 
                     artistBiography?.let{
                        lastFMLocalStorage.saveArtist(it)

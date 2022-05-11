@@ -5,7 +5,6 @@ import android.database.Cursor
 import java.sql.SQLException
 
 interface CursorToLastFMArtistBiographyMapper{
-
     fun map(cursor: Cursor): LastFMArtistBiography?
 }
 
