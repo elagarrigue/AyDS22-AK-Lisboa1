@@ -24,7 +24,6 @@ import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
 import ayds.lisboa.songinfo.utils.view.ConvertStringToHTML
 
 const val ARTIST_NAME_EXTRA ="artistName"
-private const val NO_RESULTS = "No results"
 
 interface OtherDetailsView {
     val uiEventObservable: Observable<OtherDetailsUiEvent>
@@ -40,6 +39,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private lateinit var otherDetailsModel: OtherDetailsModel
     private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
+    private val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
 
     private lateinit var biographyTextView: TextView
     private lateinit var viewFullArticleButton: Button
@@ -133,7 +133,6 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateBiographyTextView(){
-        val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
         var text = convert.convertTextToHtml(uiState.artistBiographyText, uiState.artistName)
         biographyTextView.text = setTextHTML(text)
     }
