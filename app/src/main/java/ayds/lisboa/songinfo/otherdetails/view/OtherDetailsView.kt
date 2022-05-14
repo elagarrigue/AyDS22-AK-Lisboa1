@@ -21,7 +21,6 @@ import ayds.observer.Observable
 import com.squareup.picasso.Picasso
 import ayds.lisboa.songinfo.utils.UtilsInjector
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
-import ayds.lisboa.songinfo.utils.view.ConvertStringToHTML
 
 const val ARTIST_NAME_EXTRA ="artistName"
 
@@ -39,7 +38,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private lateinit var otherDetailsModel: OtherDetailsModel
     private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
-    private val convert : ConvertStringToHTML = UtilsInjector.convertStringToHTML
+    private val convert : ConvertStringToHTML = OtherDetailsViewInjector.convertStringToHTML
 
     private lateinit var biographyTextView: TextView
     private lateinit var viewFullArticleButton: Button
@@ -72,7 +71,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private fun initArtistName() {
        val artistName = getArtist()
-        uiState = uiState.copy(artistName = artistName)
+       uiState = uiState.copy(artistName = artistName)
     }
 
     private fun initProperties() {
@@ -133,7 +132,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateBiographyTextView(){
-        var text = convert.convertTextToHtml(uiState.artistBiographyText, uiState.artistName)
+        val text = convert.convertTextToHtml(uiState.artistBiographyText, uiState.artistName)
         biographyTextView.text = setTextHTML(text)
     }
 

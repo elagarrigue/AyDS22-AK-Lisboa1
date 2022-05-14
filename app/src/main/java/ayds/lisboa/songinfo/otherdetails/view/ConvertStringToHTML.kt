@@ -1,12 +1,15 @@
-package ayds.lisboa.songinfo.utils.view
+package ayds.lisboa.songinfo.otherdetails.view
+
+private const val INIT_HTML = "<html><div width=400>"
+private const val FONT_TYPE = "<font face=\"arial\">"
+private const val END_HTML = "</font></div></html>"
 
 interface ConvertStringToHTML {
 
-    fun convertTextToHtml(artistBio: String,artistName: String): String
+    fun convertTextToHtml(artistBio: String, artistName: String): String
 }
 
-internal class ConvertStringToHTMLImpl() : ConvertStringToHTML {
-
+internal class ConvertStringToHTMLImpl : ConvertStringToHTML {
 
     override fun convertTextToHtml(artistBio: String,artistName: String):String {
         return  textToHtml(replaceLineBreakToText(artistBio), artistName)
@@ -18,10 +21,10 @@ internal class ConvertStringToHTMLImpl() : ConvertStringToHTML {
 
     private fun textToHtml(text: String, term: String): String {
         return  StringBuilder().apply {
-            append("<html><div width=400>")
-            append("<font face=\"arial\">")
+            append(INIT_HTML)
+            append(FONT_TYPE)
             append(artistBiographyTextWithBold(text, term))
-            append("</font></div></html>")
+            append(END_HTML)
         }.toString()
     }
 

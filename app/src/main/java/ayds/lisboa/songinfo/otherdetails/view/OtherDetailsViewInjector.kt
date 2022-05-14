@@ -7,6 +7,8 @@ object OtherDetailsViewInjector {
 
     val biographyDescriptionHelper: BiographyDescriptionHelper = BiographyDescriptionHelperImpl()
 
+    val convertStringToHTML: ConvertStringToHTML = ConvertStringToHTMLImpl()
+
     fun init(otherDetailsView: OtherDetailsView) {
         OtherDetailsModelInjector.initOtherDetailsModel(otherDetailsView)
         OtherDetailsControllerInjector.onViewStarted(otherDetailsView)

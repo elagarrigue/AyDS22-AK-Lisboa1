@@ -14,6 +14,4 @@ object UtilsInjector {
     val navigationUtils: NavigationUtils = NavigationUtilsImpl()
 
     val leapYearCheck: LeapYearCheck = LeapYearCheckImpl()
-
-    val convertStringToHTML: ConvertStringToHTML = ConvertStringToHTMLImpl()
 }
