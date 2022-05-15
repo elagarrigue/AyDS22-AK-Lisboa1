@@ -2,9 +2,8 @@ package ayds.lisboa.songinfo.utils
 
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtils
 import ayds.lisboa.songinfo.utils.navigation.NavigationUtilsImpl
-import ayds.lisboa.songinfo.utils.view.ImageLoader
+import ayds.lisboa.songinfo.utils.view.*
 import ayds.lisboa.songinfo.utils.view.ImageLoaderImpl
-import ayds.lisboa.songinfo.utils.view.LeapYearCheck
 import ayds.lisboa.songinfo.utils.view.LeapYearCheckImpl
 import com.squareup.picasso.Picasso
 
