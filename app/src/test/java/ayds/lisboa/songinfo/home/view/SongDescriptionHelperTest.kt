@@ -1,14 +1,16 @@
 package ayds.lisboa.songinfo.home.view
 
+import ayds.lisboa.songinfo.home.model.entities.ReleaseDatePrecision
 import ayds.lisboa.songinfo.home.model.entities.Song
 import ayds.lisboa.songinfo.home.model.entities.SpotifySong
+import ayds.lisboa.songinfo.utils.view.LeapYearCheckImpl
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class SongDescriptionHelperTest {
 
-    private val songDescriptionHelper by lazy { SongDescriptionHelperImpl(HomeViewInjector.dateFormat) }
+    private val songDescriptionHelper by lazy { SongDescriptionHelperImpl(DateFormatImpl(LeapYearCheckImpl())) } //todo asi o con un injector?
 
     @Test
     fun `given a local song it should return the description`() {
@@ -20,7 +22,8 @@ class SongDescriptionHelperTest {
             "1992-01-01",
             "url",
             "url",
-            true,
+            ReleaseDatePrecision.YEAR,
+            true
         )
 
         val result = songDescriptionHelper.getSongDescriptionText(song)
@@ -29,7 +32,7 @@ class SongDescriptionHelperTest {
             "Song: Plush [*]\n" +
                 "Artist: Stone Temple Pilots\n" +
                 "Album: Core\n" +
-                "Year: 1992"
+                "Release date: 1992 (leap year)"
 
         assertEquals(expected, result)
     }
@@ -44,7 +47,8 @@ class SongDescriptionHelperTest {
             "1992-01-01",
             "url",
             "url",
-            false,
+            ReleaseDatePrecision.YEAR,
+            false
         )
 
         val result = songDescriptionHelper.getSongDescriptionText(song)
@@ -53,7 +57,7 @@ class SongDescriptionHelperTest {
             "Song: Plush \n" +
                 "Artist: Stone Temple Pilots\n" +
                 "Album: Core\n" +
-                "Year: 1992"
+                "Release date: 1992 (leap year)"
 
         assertEquals(expected, result)
     }
