@@ -20,7 +20,7 @@ class OtherDetailsModelTest{
     @Test
     fun `on search biography it should notify the result`() {
         val artistBiography: ArtistBiography = mockk()
-        every { repository.getArtistInfo("artist") } returns artistBiography //TODO el string "artist" es correcto?
+        every { repository.getArtistInfo("artist") } returns artistBiography
         val artistBiographyTester: (ArtistBiography) -> Unit = mockk(relaxed = true)
         otherDetailsModel.artistObservable.subscribe {
             artistBiographyTester(it)
