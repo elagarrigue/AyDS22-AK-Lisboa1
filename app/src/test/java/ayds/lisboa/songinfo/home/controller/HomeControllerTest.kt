@@ -12,7 +12,6 @@ import io.mockk.verify
 import org.junit.Before
 import org.junit.Test
 
-
 class HomeControllerTest {
 
     private val homeModel: HomeModel = mockk(relaxUnitFun = true)
