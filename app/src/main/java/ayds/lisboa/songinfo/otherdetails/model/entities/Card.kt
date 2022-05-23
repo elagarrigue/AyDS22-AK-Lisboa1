@@ -1,20 +1,20 @@
 package ayds.lisboa.songinfo.otherdetails.model.entities
 
-interface CardExternalService { //todo mejor nombre interfaz
+interface Card {
     val description : String
     val infoUrl : String
     val source : String
     val sourceLogoUrl : String
 }
 
-data class Card (
+data class ServiceCard (
     override val description : String,
     override val infoUrl : String,
     override val source: String,
     override val sourceLogoUrl: String,
-): CardExternalService {}
+): Card {}
 
-object EmptyCard : CardExternalService {
+object EmptyCard : Card {
     override val description : String = ""
     override val infoUrl: String = ""
     override val source: String = ""
