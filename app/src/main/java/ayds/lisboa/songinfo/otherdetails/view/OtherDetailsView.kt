@@ -109,11 +109,10 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private fun updateArtistBiographyUiState(artist : LastFMArtistBiography) {
         uiState = uiState.copy(
-            infoExternalServiceLabel = uiState.infoExternalServiceLabel, //todo label con la info del servicio
             artistName = artist.artist,
             viewFullArticleUrl = artist.url,
             artistBiographyText = biographyDescriptionHelper.getArtistBiographyText(artist),
-            actionsEnabled = true,
+            actionsEnabled = true
         )
     }
 
