@@ -4,7 +4,7 @@ import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyArtistBiography
 import ayds.lisboa.songinfo.otherdetails.model.entities.LastFMArtistBiography
 import ayds.lisboa.songinfo.otherdetails.model.repository.ArtistBiographyRepository
 import ayds.lisboa.songinfo.otherdetails.model.repository.ArtistBiographyRepositoryImpl
-import ayds.lisboa.songinfo.otherdetails.model.repository.external.lastfm.LastFMService
+import ayds.lisboa1.lastfm.LastFMService
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.lastfm.LastFMLocalStorage
 import io.mockk.every
 import org.junit.Assert.*
@@ -15,7 +15,7 @@ import org.junit.Test
 class ArtistBiographyRepositoryTest {
 
     private val lastFMLocalStorage: LastFMLocalStorage = mockk(relaxUnitFun = true)
-    private val lastFMService: LastFMService= mockk(relaxUnitFun = true)
+    private val lastFMService: ayds.lisboa1.lastfm.LastFMService = mockk(relaxUnitFun = true)
 
     private val artistBiographyRepository: ArtistBiographyRepository by lazy {
         ArtistBiographyRepositoryImpl(lastFMLocalStorage, lastFMService)

@@ -2,7 +2,9 @@ package ayds.lisboa.songinfo.otherdetails.model.repository
 
 import ayds.lisboa.songinfo.otherdetails.model.entities.ArtistBiography
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyArtistBiography
-import ayds.lisboa.songinfo.otherdetails.model.repository.external.lastfm.LastFMService
+import ayds.lisboa.songinfo.otherdetails.model.entities.LastFMArtistBiography
+import ayds.lisboa1.lastfm.LastFMService
+import ayds.lisboa1.lastfm.LastFMArtistBiography as ServiceLastFMArtistBiography
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.lastfm.LastFMLocalStorage
 
 interface ArtistBiographyRepository{
@@ -21,7 +23,16 @@ internal class ArtistBiographyRepositoryImpl(
             artistBiography != null -> markArtistBiographyAsLocal(artistBiography)
             else -> {
                 try{
-                    artistBiography = lastFMService.getArtistBio(artistName)
+                    val serviceLastFMArtistBiography = lastFMService.getArtistBio(artistName)
+
+                    serviceLastFMArtistBiography?.let{
+                        artistBiography = LastFMArtistBiography(
+                            it.artist,
+                            it.biography,
+                            it.url,
+                            it.isLocallyStored
+                            )
+                    }
 
                     artistBiography?.let{
                        lastFMLocalStorage.saveArtist(it)
