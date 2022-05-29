@@ -12,9 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import ayds.lisboa.songinfo.R
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModel
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModelInjector
-import ayds.lisboa.songinfo.otherdetails.model.entities.ArtistBiography
-import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyArtistBiography
-import ayds.lisboa.songinfo.otherdetails.model.entities.LastFMArtistBiography
+import ayds.lisboa.songinfo.otherdetails.model.entities.*
 import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsUiState.Companion.IMAGE_URL_SERVICE
 import ayds.observer.Subject
 import ayds.observer.Observable
@@ -36,7 +34,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private val onActionSubject = Subject<OtherDetailsUiEvent>()
     private lateinit var otherDetailsModel: OtherDetailsModel
-    private val biographyDescriptionHelper: BiographyDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
+    private val cardDescriptionHelper: CardDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
     private val convert : ConvertStringToHTML = OtherDetailsViewInjector.convertStringToHTML
 
@@ -93,25 +91,25 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
             .subscribe { value -> this.updateArtistBiographyInfo(value) }
     }
 
-    private fun updateArtistBiographyInfo(artistBiography: ArtistBiography) {
+    private fun updateArtistBiographyInfo(artistBiography: Card) {
         updateUiState(artistBiography)
         updateArtistBiographyDescription()
         updateArtistUIImage()
         updateViewFullArticleState()
     }
 
-    private fun updateUiState(artistBiography: ArtistBiography) {
+    private fun updateUiState(artistBiography: Card) {
         when (artistBiography) {
-            is LastFMArtistBiography -> updateArtistBiographyUiState(artistBiography)
-            is EmptyArtistBiography -> updateNoResultsUiState()
+            is ServiceCard -> updateArtistBiographyUiState(artistBiography)
+            is EmptyCard -> updateNoResultsUiState()
         }
     }
 
-    private fun updateArtistBiographyUiState(artist : LastFMArtistBiography) {
+    private fun updateArtistBiographyUiState(artist : ServiceCard) {
         uiState = uiState.copy(
             artistName = artist.artist,
-            viewFullArticleUrl = artist.url,
-            artistBiographyText = biographyDescriptionHelper.getArtistBiographyText(artist),
+            viewFullArticleUrl = artist.infoUrl,
+            artistBiographyText = cardDescriptionHelper.getArtistBiographyText(artist),
             actionsEnabled = true
         )
     }
@@ -120,7 +118,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         uiState = uiState.copy(
             artistName = "",
             viewFullArticleUrl = "",
-            artistBiographyText = biographyDescriptionHelper.getArtistBiographyText(),
+            artistBiographyText = cardDescriptionHelper.getArtistBiographyText(),
             actionsEnabled = false
         )
     }

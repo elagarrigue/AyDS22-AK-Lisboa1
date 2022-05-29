@@ -1,14 +1,14 @@
 package ayds.lisboa.songinfo.otherdetails.model
 
 import android.content.Context
-import ayds.lisboa.songinfo.otherdetails.model.repository.ArtistBiographyRepository
-import ayds.lisboa.songinfo.otherdetails.model.repository.ArtistBiographyRepositoryImpl
+import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepository
+import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepositoryImpl
+import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.CardLocalStorage
+import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.sqldb.CursorToCardMapperImpl
+import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.sqldb.CardLocalStorageImpl
+import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsView
 import ayds.lisboa1.lastfm.LastFMInjector
 import ayds.lisboa1.lastfm.LastFMService
-import ayds.lisboa.songinfo.otherdetails.model.repository.local.lastfm.LastFMLocalStorage
-import ayds.lisboa.songinfo.otherdetails.model.repository.local.lastfm.sqldb.CursorToLastFMArtistBiographyMapperImpl
-import ayds.lisboa.songinfo.otherdetails.model.repository.local.lastfm.sqldb.LastFMLocalStorageImpl
-import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsView
 
 object OtherDetailsModelInjector {
 
@@ -17,13 +17,13 @@ object OtherDetailsModelInjector {
     fun getOtherDetailsModel(): OtherDetailsModel = otherDetailsModel
 
     fun initOtherDetailsModel(otherDetailsView: OtherDetailsView) {
-        val lastFMLocalStorage: LastFMLocalStorage = LastFMLocalStorageImpl(
-            otherDetailsView as Context, CursorToLastFMArtistBiographyMapperImpl()
+        val cardLocalStorage: CardLocalStorage = CardLocalStorageImpl(
+            otherDetailsView as Context, CursorToCardMapperImpl()
         )
-        val lastFMService: ayds.lisboa1.lastfm.LastFMService = ayds.lisboa1.lastfm.LastFMInjector.lastFMService
+        val lastFMService: LastFMService = LastFMInjector.lastFMService
 
-        val repository: ArtistBiographyRepository =
-            ArtistBiographyRepositoryImpl(lastFMLocalStorage, lastFMService)
+        val repository: CardRepository =
+            CardRepositoryImpl(cardLocalStorage, lastFMService)
 
         otherDetailsModel = OtherDetailsModelImpl(repository)
     }
