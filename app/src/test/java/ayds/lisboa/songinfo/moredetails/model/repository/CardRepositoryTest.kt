@@ -1,7 +1,6 @@
 package ayds.lisboa.songinfo.moredetails.model.repository
 
-import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyArtistBiography
-import ayds.lisboa.songinfo.otherdetails.model.entities.LastFMArtistBiography
+import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
 import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepository
 import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepositoryImpl
@@ -24,7 +23,7 @@ class CardRepositoryTest {
 
     @Test
     fun `given existing artistBiography by name should return artistBiography and mark it as local`() {
-        val artistBiography = LastFMArtistBiography("artist", "biography", "url", false)
+        val artistBiography = ServiceCard("artist", "description", "infoUrl","source", "sourceLogoUrl", false)
         every { cardLocalStorage.getInfo("artist") } returns artistBiography
 
         val result = cardRepository.getArtistInfo("artist")
@@ -35,7 +34,7 @@ class CardRepositoryTest {
 
     @Test
     fun `given non existing artistBiography by name should get the artistBiography and store it`() {
-        val artistBiography = LastFMArtistBiography("artist", "biography", "url", false)
+        val artistBiography = ServiceCard("artist", "description", "infoUrl","source", "sourceLogoUrl", false)
         every { cardLocalStorage.getInfo("artist") } returns null
         every { lastFMService.getArtistBio("artist") } returns artistBiography
 
@@ -45,8 +44,8 @@ class CardRepositoryTest {
         assertFalse(artistBiography.isLocallyStored)
         var serviceCard = ServiceCard(
             artistBiography.artist,
-            artistBiography.biography,
-            artistBiography.url,
+            artistBiography.description,
+            artistBiography.infoUrl,
             "", //TODO de donde viene?
             "",
             artistBiography.isLocallyStored
@@ -62,7 +61,7 @@ class CardRepositoryTest {
 
         val result = cardRepository.getArtistInfo("artist")
 
-        assertEquals(EmptyArtistBiography, result)
+        assertEquals(EmptyCard, result)
     }
 
     @Test
@@ -72,10 +71,10 @@ class CardRepositoryTest {
 
         val result = cardRepository.getArtistInfo("artist")
 
-        assertEquals(EmptyArtistBiography, result)
+        assertEquals(EmptyCard, result)
     }
 }
 
-private infix fun <T, B> MockKStubScope<T, B>.returns(artistBiography: LastFMArtistBiography) {
+private infix fun <T, B> MockKStubScope<T, B>.returns(artistBiography: ServiceCard) {
 
 }

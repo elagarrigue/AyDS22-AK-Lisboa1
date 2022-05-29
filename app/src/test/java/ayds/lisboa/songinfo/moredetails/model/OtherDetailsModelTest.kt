@@ -2,7 +2,7 @@ package ayds.lisboa.songinfo.moredetails.model
 
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModel
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModelImpl
-import ayds.lisboa.songinfo.otherdetails.model.entities.ArtistBiography
+import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepository
 import io.mockk.every
 import io.mockk.mockk
@@ -19,9 +19,9 @@ class OtherDetailsModelTest{
 
     @Test
     fun `on search biography it should notify the result`() {
-        val artistBiography: ArtistBiography = mockk()
+        val artistBiography: Card = mockk()
         every { repository.getArtistInfo("artist") } returns artistBiography
-        val artistBiographyTester: (ArtistBiography) -> Unit = mockk(relaxed = true)
+        val artistBiographyTester: (Card) -> Unit = mockk(relaxed = true)
         otherDetailsModel.artistObservable.subscribe {
             artistBiographyTester(it)
         }
