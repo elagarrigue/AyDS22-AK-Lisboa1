@@ -4,3 +4,5 @@ include ':app'
 include 'observer'
 rootProject.name = "AK Lisboa"
 
+include ':nytimes'
+project(':nytimes').projectDir = new File('libs/AyDS-NewYork2-Submodule')
