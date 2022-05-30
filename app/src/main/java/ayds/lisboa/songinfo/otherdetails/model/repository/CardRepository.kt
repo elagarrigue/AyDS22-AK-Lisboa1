@@ -38,7 +38,8 @@ internal class CardRepositoryImpl(
                     artistBiography?.let{
                        cardLocalStorage.saveArtist(it)
                     }
-                } catch(e : Exception){
+                } catch(e : Exception){ //TODO eliminar el try catch en esta clase
+                                            //en el peor caso retorna una lista vacia
                     artistBiography = null
                 }
             }
