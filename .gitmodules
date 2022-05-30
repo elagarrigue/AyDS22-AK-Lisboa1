@@ -1,3 +1,6 @@
 [submodule "libs/LastFMData"]
 	path = libs/LastFMData
 	url = https://github.com/yaninaerivera/Lisboa1-LastFM-Data.git
+[submodule "AyDS-NewYork2-Submodule"]
+	path = AyDS-NewYork2-Submodule
+	url = https://github.com/FacundoAlvarado9/AyDS-NewYork2-Submodule.git
