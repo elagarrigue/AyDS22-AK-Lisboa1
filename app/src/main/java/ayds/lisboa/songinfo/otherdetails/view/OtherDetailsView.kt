@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import ayds.lisboa.songinfo.R
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModel
@@ -41,6 +39,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private lateinit var biographyTextView: TextView
     private lateinit var viewFullArticleButton: Button
     private lateinit var imageView: ImageView
+    private lateinit var servicesSpinner: Spinner
 
     override val uiEventObservable: Observable<OtherDetailsUiEvent> = onActionSubject
     override var uiState: OtherDetailsUiState = OtherDetailsUiState()
@@ -56,10 +55,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         initModule()
         initArtistName()
         initProperties()
-        initListeners()
-        initObservers()
-        notifySearchBiography()
-        updateArtistUIImage()
+        initSpinner()
     }
 
     private fun initModule() {
@@ -76,6 +72,37 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         biographyTextView = findViewById(R.id.biographyTextView)
         viewFullArticleButton = findViewById<View>(R.id.viewFullArticleButton) as Button
         imageView = findViewById<View>(R.id.imageView) as ImageView
+        servicesSpinner = findViewById(R.id.spServices)
+    }
+
+    private fun initSpinner(){
+        val services = listOf(Source.LASTFM,Source.WIKIPEDIA,Source.NEW_YORK_TIMES)
+
+        val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
+        servicesSpinner.adapter = spinnerAdapter
+
+        servicesSpinner.onItemSelectedListener = object :
+            AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, listPosition: Int, p3: Long) {
+                /*
+                listPosition=0=LastFM
+                listPosition=1=Wikipedia
+                listPosition=2=New York Times
+                 */
+
+                initListeners()
+                initObservers()
+                notifySearchBiography()
+                updateArtistUIImage()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                TODO("Not yet implemented")
+            }
+
+        }
+
+
     }
 
     private fun initListeners(){

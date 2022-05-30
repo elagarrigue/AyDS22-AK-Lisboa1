@@ -29,8 +29,8 @@ internal class CardRepositoryImpl(
                             it.artist,
                             it.biography,
                             it.url,
-                            "", //TODO de donde se saca? //TODO seria un enumerado no?
-                            "", //TODO idem anterior
+                            "", //it.source //TODO de donde se saca? //TODO seria un enumerado no?
+                            "", //it.imageSourceUrl //TODO idem anterior
                             it.isLocallyStored
                             )
                     }
