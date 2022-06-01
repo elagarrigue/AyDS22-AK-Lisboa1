@@ -75,6 +75,4 @@ class CardRepositoryTest {
     }
 }
 
-private infix fun <T, B> MockKStubScope<T, B>.returns(artistBiography: ServiceCard) {
 
-}

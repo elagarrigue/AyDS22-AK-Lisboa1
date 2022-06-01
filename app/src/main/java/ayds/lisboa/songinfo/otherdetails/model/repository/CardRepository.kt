@@ -3,7 +3,7 @@ package ayds.lisboa.songinfo.otherdetails.model.repository
 import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
-import ayds.lisboa1.lastfm.LastFMService
+import ayds.lisboa.songinfo.otherdetails.model.repository.external.Broker
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.CardLocalStorage
 
 interface CardRepository{
@@ -12,39 +12,25 @@ interface CardRepository{
 
 internal class CardRepositoryImpl(
     private val cardLocalStorage: CardLocalStorage,
-    private val lastFMService: LastFMService //TODO esta bien lastFMService junto con Card?
+    private val broker: Broker
 ) : CardRepository{
 
     override fun getArtistInfo(artistName: String): Card {
-        var artistBiography = cardLocalStorage.getInfo(artistName)
+        var card = cardLocalStorage.getInfo(artistName)
 
         when {
-            artistBiography != null -> markArtistBiographyAsLocal(artistBiography)
+            card != null -> markArtistBiographyAsLocal(card)
             else -> {
-                try{
-                    val serviceLastFMArtistBiography = lastFMService.getArtistBio(artistName)
-
-                    serviceLastFMArtistBiography?.let{
-                        artistBiography = ServiceCard(
-                            it.artist,
-                            it.biography,
-                            it.url,
-                            "", //it.source //TODO de donde se saca? //TODO seria un enumerado no?
-                            "", //it.imageSourceUrl //TODO idem anterior
-                            it.isLocallyStored
-                            )
+                    val serviceCards = broker.getCards(artistName)
+                    serviceCards?.let{
                     }
 
-                    artistBiography?.let{
+                    card?.let{
                        cardLocalStorage.saveArtist(it)
                     }
-                } catch(e : Exception){ //TODO eliminar el try catch en esta clase
-                                            //en el peor caso retorna una lista vacia
-                    artistBiography = null
-                }
             }
         }
-        return artistBiography ?: EmptyCard
+        return card ?: EmptyCard
     }
 
     private fun markArtistBiographyAsLocal(card: Card) {

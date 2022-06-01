@@ -15,7 +15,7 @@ internal class CursorToCardMapperImpl : CursorToCardMapper {
             with(cursor) {
                 if (moveToNext()) {
                     ServiceCard(
-                        artist = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
+                        term = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
                         description = getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),
                         infoUrl = getString(getColumnIndexOrThrow(INFO_URL_COLUMN)),
                         source = getString(getColumnIndexOrThrow(SOURCE_COLUMN)),

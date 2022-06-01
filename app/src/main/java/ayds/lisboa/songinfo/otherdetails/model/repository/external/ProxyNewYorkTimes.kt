@@ -1,8 +1,9 @@
-package ayds.lisboa.songinfo.otherdetails.model.repository.external.service
+package ayds.lisboa.songinfo.otherdetails.model.repository.external
 
 import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
+import ayds.lisboa.songinfo.otherdetails.model.entities.Source
 import ayds.newyork2.newyorkdata.external.nytimes.NYTimesService
 
 internal class ProxyNewYorkTimes (
@@ -18,9 +19,8 @@ internal class ProxyNewYorkTimes (
                     dataCardNewYork.artistName,
                     dataCardNewYork.artistInfo,
                     dataCardNewYork.artistUrl,
-                    "New York Times", //todo idem lastFM
-                    "",
-                    false, //TODO idem lastFm
+                    Source.NEW_YORK_TIMES,
+                    "" //TODO deberiamos poder obtener el logoURl
                 )
             }
         } catch (e: Exception) {

@@ -36,7 +36,7 @@ internal class CardLocalStorageImpl(
 
     private fun createMapValues(serviceCard : ServiceCard): ContentValues {
         val values = ContentValues().apply {
-            put(ARTIST_COLUMN, serviceCard.artist)
+            put(ARTIST_COLUMN, serviceCard.term)
             put(DESCRIPTION_COLUMN, serviceCard.description)
             put(INFO_URL_COLUMN, serviceCard.infoUrl)
             put(SOURCE_COLUMN, serviceCard.source)

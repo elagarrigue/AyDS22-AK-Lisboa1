@@ -99,10 +99,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 TODO("Not yet implemented")
             }
-
         }
-
-
     }
 
     private fun initListeners(){
@@ -134,7 +131,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private fun updateArtistBiographyUiState(artist : ServiceCard) {
         uiState = uiState.copy(
-            artistName = artist.artist,
+            artistName = artist.term,
             viewFullArticleUrl = artist.infoUrl,
             artistBiographyText = cardDescriptionHelper.getArtistBiographyText(artist),
             actionsEnabled = true

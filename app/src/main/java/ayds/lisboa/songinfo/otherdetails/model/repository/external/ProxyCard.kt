@@ -1,4 +1,4 @@
-package ayds.lisboa.songinfo.otherdetails.model.repository.external.service
+package ayds.lisboa.songinfo.otherdetails.model.repository.external
 
 import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 

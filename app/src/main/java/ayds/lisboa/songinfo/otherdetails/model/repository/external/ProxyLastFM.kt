@@ -1,8 +1,9 @@
-package ayds.lisboa.songinfo.otherdetails.model.repository.external.service
+package ayds.lisboa.songinfo.otherdetails.model.repository.external
 
 import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
+import ayds.lisboa.songinfo.otherdetails.model.entities.Source
 import ayds.lisboa1.lastfm.LastFMService
 
 internal class ProxyLastFM (
@@ -17,10 +18,9 @@ internal class ProxyLastFM (
                 cardLastFM = ServiceCard(
                     dataCardLastFM.artist,
                     dataCardLastFM.biography,
-                    dataCardLastFM.url,
-                    "LastFm", //todo lo podemos dejar literal? o necesitamos traerlo desde el servicio?
-                    "",
-                    false, //TODO llamamos al servicio o como inicializa siempre va false?
+                    dataCardLastFM.articleUrl,
+                    Source.LASTFM, //todo lo podemos dejar literal? o necesitamos traerlo desde el servicio?
+                    dataCardLastFM.logoUrl
                 )
             }
         } catch (e: Exception) {
