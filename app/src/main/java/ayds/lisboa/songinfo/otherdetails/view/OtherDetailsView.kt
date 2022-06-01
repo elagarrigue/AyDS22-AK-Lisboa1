@@ -76,7 +76,13 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun initSpinner(){
-        val services = listOf(Source.LASTFM,Source.WIKIPEDIA,Source.NEW_YORK_TIMES)
+        val sourceToString = mutableMapOf<Source,String>()//TODO derivar la creacion del mapper a un metodo
+        sourceToString[Source.LASTFM] = "LastFm"
+        sourceToString[Source.WIKIPEDIA] = "Wikipedia"
+        sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
+
+        val services = listOf(sourceToString[Source.LASTFM],sourceToString[Source.WIKIPEDIA],sourceToString[Source.NEW_YORK_TIMES])
+
 
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
