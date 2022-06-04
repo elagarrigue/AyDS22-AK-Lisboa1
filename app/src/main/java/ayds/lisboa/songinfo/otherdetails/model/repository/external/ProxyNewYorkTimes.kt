@@ -20,7 +20,7 @@ internal class ProxyNewYorkTimes (
                     dataCardNewYork.artistInfo,
                     dataCardNewYork.artistUrl,
                     Source.NEW_YORK_TIMES,
-                    dataCardNewYork.source_logo_url //TODO deberiamos poder obtener el logoURl
+                    dataCardNewYork.source_logo_url
                 )
             }
         } catch (e: Exception) {

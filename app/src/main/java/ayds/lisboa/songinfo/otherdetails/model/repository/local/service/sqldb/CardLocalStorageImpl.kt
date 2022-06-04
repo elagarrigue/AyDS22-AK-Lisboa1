@@ -39,13 +39,13 @@ internal class CardLocalStorageImpl(
             put(ARTIST_COLUMN, serviceCard.term)
             put(DESCRIPTION_COLUMN, serviceCard.description)
             put(INFO_URL_COLUMN, serviceCard.infoUrl)
-            put(SOURCE_COLUMN, serviceCard.source)
+            put(SOURCE_COLUMN, serviceCard.source.ordinal) //Todo
             put(SOURCE_LOGO_URL_COLUMN, serviceCard.sourceLogoUrl)
         }
         return values
     }
 
-    override fun getInfo(artist: String): ServiceCard? {
+    override fun getInfo(artist: String): List<ServiceCard> {
         val cursor = cursorDefinition(artist)
         return cursorToCardMapper.map(cursor)
     }

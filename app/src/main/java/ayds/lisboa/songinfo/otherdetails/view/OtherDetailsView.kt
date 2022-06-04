@@ -120,16 +120,16 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
             .subscribe { value -> this.updateArtistBiographyInfo(value) }
     }
 
-    private fun updateArtistBiographyInfo(artistBiography: Card) {
+    private fun updateArtistBiographyInfo(artistBiography: List<Card>) {
         updateUiState(artistBiography)
         updateArtistBiographyDescription()
         updateArtistUIImage()
         updateViewFullArticleState()
     }
 
-    private fun updateUiState(artistBiography: Card) {
-        when (artistBiography) {
-            is ServiceCard -> updateArtistBiographyUiState(artistBiography)
+    private fun updateUiState(listArtistBiography: List<Card>) {
+        when (listArtistBiography) {
+            is ServiceCard -> updateArtistBiographyUiState(listArtistBiography)
             is EmptyCard -> updateNoResultsUiState()
         }
     }

@@ -13,7 +13,8 @@ import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.sqldb.Cu
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.sqldb.CardLocalStorageImpl
 import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsView
 import ayds.lisboa1.lastfm.LastFMInjector
-import ayds.newyork2.newyorkdata.external.nytimes.NYTimesInjector
+import ayds.newyork2.newyorkdata.nytimes.NYTimesInjector
+import ayds.winchester2.wikipedia.WikipediaInjector
 
 object OtherDetailsModelInjector {
 
@@ -35,8 +36,8 @@ object OtherDetailsModelInjector {
     private fun getBroker() : Broker {
 
         val proxyLastFMService = ProxyLastFM(LastFMInjector.lastFMService)
-        val proxyNewYorkTimes = ProxyNewYorkTimes(NYTimesInjector.nyTimesService) //TODO puede que lo modifiquen los chicos, chequear
-        val proxyWikipedia = ProxyWikipedia(LastFMInjector.lastFMService) //TODO corregir al de Wiki
+        val proxyNewYorkTimes = ProxyNewYorkTimes(NYTimesInjector.nyTimesService)
+        val proxyWikipedia = ProxyWikipedia(WikipediaInjector.wikipediaService)
 
        return  BrokerImpl (proxyLastFMService, proxyNewYorkTimes, proxyWikipedia)
     }

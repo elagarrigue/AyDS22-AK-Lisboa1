@@ -4,23 +4,23 @@ import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.Source
-import ayds.lisboa1.lastfm.LastFMService
+import ayds.winchester2.wikipedia.ExternalRepository
 
 internal class ProxyWikipedia (
-    private val wikipediaService : LastFMService
-    ) : ProxyCard { //TODO cambiar al service de Wikipedia
+    private val wikipediaService : ExternalRepository
+    ) : ProxyCard {
 
         override fun getCard(artist: String) : Card {
             var cardLastFM : ServiceCard? = null
             try {
-                val dataCardLastFM = wikipediaService.getArtistBio(artist)
+                val dataCardLastFM = wikipediaService.getArtistDescription(artist)
                 if (dataCardLastFM != null) {
                     cardLastFM = ServiceCard(
-                        dataCardLastFM.artist,
-                        dataCardLastFM.biography,
-                        dataCardLastFM.articleUrl,
-                        Source.WIKIPEDIA, //todo lo podemos dejar literal? o necesitamos traerlo desde el servicio?
-                        dataCardLastFM.logoUrl
+                        "", //TODO Wikipedia no retorna artista?
+                        dataCardLastFM.description,
+                        dataCardLastFM.source,
+                        Source.WIKIPEDIA,
+                        dataCardLastFM.sourceLogo
                     )
                 }
             } catch (e: Exception) {

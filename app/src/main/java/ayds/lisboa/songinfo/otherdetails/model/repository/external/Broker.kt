@@ -11,7 +11,6 @@ internal class BrokerImpl(
     private val proxyLastFM : ProxyLastFM,
     private val proxyNewYorkTimes: ProxyNewYorkTimes,
     private val proxyWikipedia: ProxyWikipedia
-
 ) : Broker {
 
     override fun getCards (name : String) : List<Card> {
