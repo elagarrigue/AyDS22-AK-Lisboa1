@@ -83,7 +83,6 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
         val services = listOf(sourceToString[Source.LASTFM],sourceToString[Source.WIKIPEDIA],sourceToString[Source.NEW_YORK_TIMES])
 
-
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
 

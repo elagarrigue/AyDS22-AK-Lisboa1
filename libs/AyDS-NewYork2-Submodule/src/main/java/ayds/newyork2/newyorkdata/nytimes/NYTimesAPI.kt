@@ -1,4 +1,4 @@
-package ayds.newyork2.newyorkdata.external.nytimes
+package ayds.newyork2.newyorkdata.nytimes
 
 import retrofit2.Call
 import retrofit2.http.GET

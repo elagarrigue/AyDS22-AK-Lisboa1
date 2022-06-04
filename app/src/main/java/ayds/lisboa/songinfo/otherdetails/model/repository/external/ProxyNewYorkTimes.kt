@@ -4,7 +4,7 @@ import ayds.lisboa.songinfo.otherdetails.model.entities.Card
 import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.Source
-import ayds.newyork2.newyorkdata.external.nytimes.NYTimesService
+import ayds.newyork2.newyorkdata.nytimes.NYTimesService
 
 internal class ProxyNewYorkTimes (
     private val newYorkTimesService : NYTimesService
@@ -20,7 +20,7 @@ internal class ProxyNewYorkTimes (
                     dataCardNewYork.artistInfo,
                     dataCardNewYork.artistUrl,
                     Source.NEW_YORK_TIMES,
-                    "" //TODO deberiamos poder obtener el logoURl
+                    dataCardNewYork.source_logo_url //TODO deberiamos poder obtener el logoURl
                 )
             }
         } catch (e: Exception) {

@@ -19,7 +19,7 @@ internal class ProxyLastFM (
                     dataCardLastFM.artist,
                     dataCardLastFM.biography,
                     dataCardLastFM.articleUrl,
-                    Source.LASTFM, //todo lo podemos dejar literal? o necesitamos traerlo desde el servicio?
+                    Source.LASTFM,
                     dataCardLastFM.logoUrl
                 )
             }

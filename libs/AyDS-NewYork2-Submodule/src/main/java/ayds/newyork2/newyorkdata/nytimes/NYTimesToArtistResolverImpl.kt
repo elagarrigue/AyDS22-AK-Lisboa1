@@ -1,4 +1,4 @@
-package ayds.newyork2.newyorkdata.external.nytimes
+package ayds.newyork2.newyorkdata.nytimes
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -9,12 +9,12 @@ private const val ABSTRACT  = "abstract"
 private const val WEB_URL = "web_url"
 
 
-class NYTimesToArtistResolverImpl : NYTimesToArtistResolver {
+internal class NYTimesToArtistResolverImpl : NYTimesToArtistResolver {
 
-    override fun getArtistFromExternalData(serviceData: String?, artistName: String) : ExternalArtistInfo? {
+    override fun getArtistFromExternalData(serviceData: String?, artistName: String) : NYTimesArtistInfo? {
         return try {
             serviceData?.getFirstItem()?.let { item ->
-                ExternalArtistInfo(
+                NYTimesArtistInfo(
                     artistName,
                     item.getInfo(),
                     item.getUrl()

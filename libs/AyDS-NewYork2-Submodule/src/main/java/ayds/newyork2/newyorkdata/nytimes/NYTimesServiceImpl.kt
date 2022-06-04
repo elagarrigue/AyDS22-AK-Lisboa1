@@ -1,10 +1,11 @@
-package ayds.newyork2.newyorkdata.external.nytimes
+package ayds.newyork2.newyorkdata.nytimes
 
 import retrofit2.Response
 
-class NYTimesServiceImpl (private val artistResolver : NYTimesToArtistResolver, private val apiFromNYTimes : NYTimesAPI): NYTimesService {
+internal class NYTimesServiceImpl (private val artistResolver : NYTimesToArtistResolver, private val apiFromNYTimes : NYTimesAPI):
+    NYTimesService {
 
-    override fun getArtist(artistName: String) : ExternalArtistInfo? {
+    override fun getArtist(artistName: String) : NYTimesArtistInfo? {
         val callResponse = getRawArtistInfoFromExternal(artistName)
         return artistResolver.getArtistFromExternalData(callResponse.body(), artistName)
     }

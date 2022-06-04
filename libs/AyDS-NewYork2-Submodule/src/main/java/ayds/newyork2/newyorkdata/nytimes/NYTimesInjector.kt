@@ -1,4 +1,4 @@
-package ayds.newyork2.newyorkdata.external.nytimes
+package ayds.newyork2.newyorkdata.nytimes
 
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -9,7 +9,7 @@ object NYTimesInjector {
 
     private val artistResolver : NYTimesToArtistResolver = NYTimesToArtistResolverImpl()
     private val apiFromNYTimes : NYTimesAPI = initializeAPI().create(NYTimesAPI::class.java)
-    val nyTimesService: NYTimesService = NYTimesServiceImpl(artistResolver,apiFromNYTimes)
+    val nyTimesService: NYTimesService = NYTimesServiceImpl(artistResolver, apiFromNYTimes)
 
     private fun initializeAPI() =
         Retrofit.Builder()
