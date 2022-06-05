@@ -11,7 +11,6 @@ import ayds.lisboa.songinfo.R
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModel
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModelInjector
 import ayds.lisboa.songinfo.otherdetails.model.entities.*
-import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsUiState.Companion.IMAGE_URL_SERVICE
 import ayds.observer.Subject
 import ayds.observer.Observable
 import com.squareup.picasso.Picasso
@@ -36,6 +35,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
     private val convert : ConvertStringToHTML = OtherDetailsViewInjector.convertStringToHTML
 
+    private lateinit var sourceList: List<Card>
     private lateinit var biographyTextView: TextView
     private lateinit var viewFullArticleButton: Button
     private lateinit var imageView: ImageView
@@ -55,7 +55,11 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         initModule()
         initArtistName()
         initProperties()
+        initListeners()
         initSpinner()
+        initObservers()
+        notifySearchBiography()
+        updateArtistUIImage()
     }
 
     private fun initModule() {
@@ -64,8 +68,8 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun initArtistName() {
-       val artistName = getArtist()
-       uiState = uiState.copy(artistName = artistName)
+        val artistName = getArtist()
+        uiState = uiState.copy(artistName = artistName)
     }
 
     private fun initProperties() {
@@ -78,10 +82,12 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private fun initSpinner(){
         val sourceToString = mutableMapOf<Source,String>()//TODO derivar la creacion del mapper a un metodo
         sourceToString[Source.LASTFM] = "LastFm"
-        sourceToString[Source.WIKIPEDIA] = "Wikipedia"
         sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
+        sourceToString[Source.WIKIPEDIA] = "Wikipedia"
 
-        val services = listOf(sourceToString[Source.LASTFM],sourceToString[Source.WIKIPEDIA],sourceToString[Source.NEW_YORK_TIMES])
+
+        val services = listOf(sourceToString[Source.LASTFM],sourceToString[Source.NEW_YORK_TIMES],sourceToString[Source.WIKIPEDIA])
+
 
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
@@ -91,14 +97,10 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, listPosition: Int, p3: Long) {
                 /*
                 listPosition=0=LastFM
-                listPosition=1=Wikipedia
-                listPosition=2=New York Times
+                listPosition=1=New York Times
+                listPosition=2=Wikipedia
                  */
 
-                initListeners()
-                initObservers()
-                notifySearchBiography()
-                updateArtistUIImage()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -121,15 +123,20 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateArtistBiographyInfo(artistBiography: List<Card>) {
-        updateUiState(artistBiography)
+        createSourceList(artistBiography)
+        updateUiState(sourceList[servicesSpinner.selectedItemPosition])
         updateArtistBiographyDescription()
         updateArtistUIImage()
         updateViewFullArticleState()
     }
 
-    private fun updateUiState(listArtistBiography: List<Card>) {
-        when (listArtistBiography) {
-            is ServiceCard -> updateArtistBiographyUiState(listArtistBiography)
+    private fun createSourceList(artistBiography: List<Card>){
+        sourceList=artistBiography
+    }
+
+    private fun updateUiState(artistBiography: Card) {
+        when (artistBiography) {
+            is ServiceCard -> updateArtistBiographyUiState(artistBiography)
             is EmptyCard -> updateNoResultsUiState()
         }
     }
@@ -184,7 +191,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateArtistImageURL() {
-        Picasso.get().load(IMAGE_URL_SERVICE).into(imageView)
+        //Picasso.get().load(IMAGE_URL_SERVICE).into(imageView)
     }
 
     private fun updateViewFullArticleState(){
