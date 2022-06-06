@@ -15,12 +15,12 @@ internal class CardRepositoryImpl(
 ) : CardRepository{
 
     override fun getArtistInfo(artistName: String): List<Card> {
-        var listCards : List<Card> = cardLocalStorage.getInfo(artistName) //TODO ojo devuelve List<ServiceCard>
+        var listCards : List<Card> = cardLocalStorage.getInfo(artistName)
 
         when {
             listCards.isNotEmpty() -> markArtistBiographyAsLocal(listCards)
             else -> {
-                    listCards = broker.getCards(artistName) //TODO reveer
+                    listCards = broker.getCards(artistName)
                     if (listCards.isNotEmpty()){
                         saveCardsToArtist(listCards)
                     }
@@ -33,8 +33,10 @@ internal class CardRepositoryImpl(
         listCards.map { it.isLocallyStored = true}
     }
 
-    private fun saveCardsToArtist(serviceCards: List<Card>){
-        serviceCards.map { cardLocalStorage.saveArtist(it as ServiceCard)}
-    }
+    private fun saveCardsToArtist(serviceCards: List<Card>){for(card in serviceCards){
+        if(card is ServiceCard){
+            cardLocalStorage.saveArtist(card)
+        }
+    }}
 
 }

@@ -39,7 +39,7 @@ internal class CardLocalStorageImpl(
             put(ARTIST_COLUMN, serviceCard.term)
             put(DESCRIPTION_COLUMN, serviceCard.description)
             put(INFO_URL_COLUMN, serviceCard.infoUrl)
-            put(SOURCE_COLUMN, serviceCard.source.ordinal) //Todo
+            put(SOURCE_COLUMN, serviceCard.source.ordinal)
             put(SOURCE_LOGO_URL_COLUMN, serviceCard.sourceLogoUrl)
         }
         return values

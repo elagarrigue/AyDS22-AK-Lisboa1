@@ -1,11 +1,14 @@
 package ayds.lisboa.songinfo.moredetails.model.repository
 
-import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
+import ayds.lisboa.songinfo.otherdetails.model.entities.Source
 import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepository
 import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepositoryImpl
+import ayds.lisboa.songinfo.otherdetails.model.repository.external.Broker
+import ayds.lisboa.songinfo.otherdetails.model.repository.external.ProxyLastFM
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.CardLocalStorage
-import io.mockk.MockKStubScope
+import ayds.lisboa1.lastfm.LastFMArtistBiography
+import ayds.lisboa1.lastfm.LastFMService
 import io.mockk.every
 import org.junit.Assert.*
 import io.mockk.mockk
@@ -15,64 +18,70 @@ import org.junit.Test
 class CardRepositoryTest {
 
     private val cardLocalStorage: CardLocalStorage = mockk(relaxUnitFun = true)
-    private val lastFMService: ayds.lisboa1.lastfm.LastFMService = mockk(relaxUnitFun = true)
+    private val broker: Broker = mockk(relaxUnitFun = true)
 
     private val cardRepository: CardRepository by lazy {
-        CardRepositoryImpl(cardLocalStorage, lastFMService)
+        CardRepositoryImpl(cardLocalStorage, broker)
     }
 
     @Test
     fun `given existing artistBiography by name should return artistBiography and mark it as local`() {
-        val artistBiography = ServiceCard("artist", "description", "infoUrl","source", "sourceLogoUrl", false)
-        every { cardLocalStorage.getInfo("artist") } returns artistBiography
+        val cardList: List<ServiceCard> = listOf(
+            ServiceCard("artist", "description", "infoUrl", Source.LASTFM, "sourceLogoUrl", false)
+        )
+
+        every { cardLocalStorage.getInfo("artist") } returns cardList
 
         val result = cardRepository.getArtistInfo("artist")
 
-        assertEquals(artistBiography, result)
-        assertTrue(artistBiography.isLocallyStored)
+        assertEquals(cardList, result)
+        assertTrue(cardList.first().isLocallyStored)
     }
 
     @Test
     fun `given non existing artistBiography by name should get the artistBiography and store it`() {
-        val artistBiography = ServiceCard("artist", "description", "infoUrl","source", "sourceLogoUrl", false)
-        every { cardLocalStorage.getInfo("artist") } returns null
-        every { lastFMService.getArtistBio("artist") } returns artistBiography
+        val lastFMService: LastFMService = mockk()
+
+        val card = ServiceCard("artist", "biography", "articleUrl",Source.LASTFM,"sourceLogoUrl",false)
+        val sourceCard = LastFMArtistBiography("artist","biography","articleUrl","sourceLogoUrl")
+
+        every { cardLocalStorage.getInfo("artist") } returns listOf()
+        every { lastFMService.getArtistBio("artist") } returns sourceCard
+        every { broker.getCards("artist") } returns listOf(card)
 
         val result = cardRepository.getArtistInfo("artist")
 
-        assertEquals(artistBiography, result)
-        assertFalse(artistBiography.isLocallyStored)
-        var serviceCard = ServiceCard(
-            artistBiography.artist,
-            artistBiography.description,
-            artistBiography.infoUrl,
-            "", //TODO de donde viene?
-            "",
-            artistBiography.isLocallyStored
-        ) //TODO esto esta bien?
+        assertEquals(card, result.first())
+        assertFalse(card.isLocallyStored)
 
-        verify { cardLocalStorage.saveArtist(serviceCard) } //TODO ESTO esta bien?
+        verify { cardLocalStorage.saveArtist(card) }
     }
 
     @Test
     fun `given non existing artistBiography by term should return empty artistBiography`() {
-        every { cardLocalStorage.getInfo("artist") } returns null
-        every { lastFMService.getArtistBio("artist") } returns null
+        every { cardLocalStorage.getInfo("artist") } returns emptyList()
+        every { broker.getCards("artist") } returns listOf()
 
         val result = cardRepository.getArtistInfo("artist")
+        val expected : List<ServiceCard> = emptyList()
 
-        assertEquals(EmptyCard, result)
+        assertEquals(expected, result)
     }
 
     @Test
     fun `given service exception should return empty artistBiography`() {
-        every { cardLocalStorage.getInfo("artist") } returns null
-        every { lastFMService.getArtistBio("artist") } throws mockk<Exception>()
+        val proxyLastFM : ProxyLastFM = mockk()
+
+        every { cardLocalStorage.getInfo("artist") } returns emptyList()
+        every { broker.getCards("artist") } returns listOf()
+        every { proxyLastFM.getCard("artist") } throws mockk<Exception>()
 
         val result = cardRepository.getArtistInfo("artist")
+        val expected : List<ServiceCard> = emptyList()
 
-        assertEquals(EmptyCard, result)
+        assertEquals(expected, result)
     }
 }
+
 
 

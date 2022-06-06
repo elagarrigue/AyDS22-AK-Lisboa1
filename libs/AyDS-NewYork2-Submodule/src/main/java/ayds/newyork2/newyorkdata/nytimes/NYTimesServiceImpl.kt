@@ -11,6 +11,6 @@ internal class NYTimesServiceImpl (private val artistResolver : NYTimesToArtistR
     }
 
     private fun getRawArtistInfoFromExternal(artistName : String) : Response<String?> {
-        return apiFromNYTimes.getArtistInfo(artistName)?.execute() ?: throw Exception("Response not found") //TODO
+        return apiFromNYTimes.getArtistInfo(artistName)?.execute() ?: throw Exception("Response not found")
     }
 }
