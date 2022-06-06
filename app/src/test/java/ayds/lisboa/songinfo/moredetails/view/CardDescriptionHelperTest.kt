@@ -22,7 +22,7 @@ class CardDescriptionHelperTest {
             true
         )
 
-        val result = cardDescriptionHelper.getArtistBiographyText(artistBiography)
+        val result = cardDescriptionHelper.getCardDescriptionText(artistBiography)
 
         val expected =
             "[*]\n" + "description"
@@ -41,7 +41,7 @@ class CardDescriptionHelperTest {
             false
         )
 
-        val result = cardDescriptionHelper.getArtistBiographyText(artistBiography)
+        val result = cardDescriptionHelper.getCardDescriptionText(artistBiography)
 
         val expected =
             "\n" + "description"
@@ -53,7 +53,7 @@ class CardDescriptionHelperTest {
     fun `given a non lastFM artistBiography it should return the artistBiography not found description`() {
         val artistBiography: Card = mockk()
 
-        val result = cardDescriptionHelper.getArtistBiographyText(artistBiography)
+        val result = cardDescriptionHelper.getCardDescriptionText(artistBiography)
 
         val expected = "No results"
 

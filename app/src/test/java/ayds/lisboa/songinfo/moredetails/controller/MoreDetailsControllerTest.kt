@@ -34,7 +34,7 @@ class MoreDetailsControllerTest {
     fun `on search event should search biography`() {
         every { otherDetailsView.uiState } returns OtherDetailsUiState(artistName = "biography")
 
-        onActionSubject.notify(OtherDetailsUiEvent.SearchBiography)
+        onActionSubject.notify(OtherDetailsUiEvent.SearchCardDescription)
 
         verify { otherDetailsModel.searchBiography("biography") }
     }
@@ -43,7 +43,7 @@ class MoreDetailsControllerTest {
     fun `on open full article url event should open external link`  () {
         every { otherDetailsView.uiState } returns OtherDetailsUiState(viewFullArticleUrl = "url")
 
-        onActionSubject.notify(OtherDetailsUiEvent.OpenBiographyArticleUrl)
+        onActionSubject.notify(OtherDetailsUiEvent.OpenCardInfoUrl)
 
         verify { otherDetailsView.openExternalLink("url") }
     }

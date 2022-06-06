@@ -5,7 +5,7 @@ import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModelInjector
 
 object OtherDetailsViewInjector {
 
-    val biographyDescriptionHelper: CardDescriptionHelper = CardDescriptionHelperImpl()
+    val cardDescriptionHelper: CardDescriptionHelper = CardDescriptionHelperImpl()
 
     val convertStringToHTML: ConvertStringToHTML = ConvertStringToHTMLImpl()
 

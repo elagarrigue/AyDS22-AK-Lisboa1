@@ -1,6 +1,6 @@
 package ayds.lisboa.songinfo.otherdetails.view
 
 sealed class OtherDetailsUiEvent {
-    object SearchBiography: OtherDetailsUiEvent()
-    object OpenBiographyArticleUrl : OtherDetailsUiEvent()
+    object SearchCardDescription: OtherDetailsUiEvent()
+    object OpenCardInfoUrl : OtherDetailsUiEvent()
 }

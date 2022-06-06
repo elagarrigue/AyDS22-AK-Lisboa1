@@ -15,7 +15,7 @@ internal class CursorToCardMapperImpl : CursorToCardMapper {
         val cards : MutableList<ServiceCard> = mutableListOf()
         try {
             with(cursor) {
-                if (moveToNext()) { //TODO falla al inicio? cuando llama a getArtistInfo () en view
+                if (moveToNext()) {
                     val card = ServiceCard(
                         term = getString(getColumnIndexOrThrow(ARTIST_COLUMN)),
                         description = getString(getColumnIndexOrThrow(DESCRIPTION_COLUMN)),

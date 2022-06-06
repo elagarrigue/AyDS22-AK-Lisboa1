@@ -25,15 +25,17 @@ interface OtherDetailsView {
 
     fun onCreate(savedInstanceState: Bundle?)
     fun openExternalLink(url: String)
-}class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
+}
+
+class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private val onActionSubject = Subject<OtherDetailsUiEvent>()
     private lateinit var otherDetailsModel: OtherDetailsModel
-    private val cardDescriptionHelper: CardDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper //todo
+    private val cardDescriptionHelper: CardDescriptionHelper = OtherDetailsViewInjector.cardDescriptionHelper
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
     private val convert : ConvertStringToHTML = OtherDetailsViewInjector.convertStringToHTML
 
-    private lateinit var biographyTextView: TextView
+    private lateinit var cardDescriptionTextView: TextView
     private lateinit var viewFullArticleButton: Button
     private lateinit var imageView: ImageView
     private lateinit var servicesSpinner: Spinner
@@ -50,12 +52,11 @@ interface OtherDetailsView {
         setContentView(R.layout.activity_other_info)
 
         initModule()
-        initArtistName()
+        initCardArtistName()
         initProperties()
         initListeners()
         initObservers()
-        notifySearchBiography()
-        updateSpinner()
+        notifySearchCardDescription()
     }
 
     private fun initModule() {
@@ -63,30 +64,78 @@ interface OtherDetailsView {
         otherDetailsModel = OtherDetailsModelInjector.getOtherDetailsModel()
     }
 
-    private fun initArtistName() {
+    private fun initCardArtistName() {
         val artistName = getArtist()
         uiState = uiState.copy(artistName = artistName)
     }
 
     private fun initProperties() {
-        biographyTextView = findViewById(R.id.biographyTextView)
+        cardDescriptionTextView = findViewById(R.id.cardDescriptionTextView)
         viewFullArticleButton = findViewById<View>(R.id.viewFullArticleButton) as Button
         imageView = findViewById<View>(R.id.imageView) as ImageView
         servicesSpinner = findViewById(R.id.spServices)
     }
 
+    private fun initListeners(){
+        viewFullArticleButton.setOnClickListener { notifyOpenCardInfoUrl() }
+    }
+
+    private fun notifyOpenCardInfoUrl(){
+        onActionSubject.notify(OtherDetailsUiEvent.OpenCardInfoUrl)
+    }
+
+    private fun initObservers() {
+        otherDetailsModel.artistObservable
+            .subscribe { value -> this.updateCardListInfo(value) }
+    }
+
+    private fun updateCardListInfo(cardList: List<Card>) {
+        updateSourceList(cardList)
+        updateSpinner()
+    }
+
+    private fun updateSourceList(cardList: List<Card>){
+        val listAux: MutableList<CardUi> = mutableListOf()
+        for (card in cardList){
+            if(card is ServiceCard){
+                listAux.add(cardToUiCard(card))
+            }
+        }
+        uiState.cardsList = listAux
+    }
+
+    private fun cardToUiCard(card: Card): CardUi {
+        return CardUi(
+            card.sourceLogoUrl,
+            card.infoUrl,
+            card.description,
+            card.isLocallyStored,
+            card.source
+        )
+    }
+
     private fun updateSpinner(){
-        val sourceToString = mutableMapOf<Source,String>()//TODO derivar la creacion del mapper a un metodo
+        runOnUiThread {
+            updateSpinnerUi()
+        }
+    }
+
+    private fun createSourceMapper(): MutableMap<Source,String>{
+        val sourceToString = mutableMapOf<Source,String>()
         sourceToString[Source.LASTFM] = "LastFm"
         sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
         sourceToString[Source.WIKIPEDIA] = "Wikipedia"
 
-        var services: MutableList<String> = mutableListOf()
-        for(card in uiState.listCards)
-            //services.add(card.source.toString()) //TODO creo que no anda
-            sourceToString[card.source]?.let { services.add(it) }
+        return sourceToString
+    }
 
-        //val services = mutableListOf(sourceToString[Source.LASTFM],sourceToString[Source.NEW_YORK_TIMES],sourceToString[Source.WIKIPEDIA])
+    private fun updateSpinnerUi(){
+
+        val sourceToString = createSourceMapper()
+
+        val services : MutableList<String> = mutableListOf()
+        for(card in uiState.cardsList)
+            sourceToString[card.source]?.let { services.add(it) }
 
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
@@ -94,74 +143,26 @@ interface OtherDetailsView {
         servicesSpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, listPosition: Int, p3: Long) {
-                /*
-                listPosition=0=LastFM
-                listPosition=1=New York Times
-                listPosition=2=Wikipedia
-                 */
-                if(uiState.listCards.isNotEmpty())
-                    updateArtistBiographyInfoAux()
-
+                updateCardInfo()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                //TODO
+                updateNoResultsUiState()
             }
         }
     }
 
-    private fun initListeners(){
-        viewFullArticleButton.setOnClickListener { notifyOpenBiographyArticleUrl() }
-    }
-
-    private fun notifyOpenBiographyArticleUrl(){
-        onActionSubject.notify(OtherDetailsUiEvent.OpenBiographyArticleUrl)
-    }
-
-    private fun initObservers() {
-        otherDetailsModel.artistObservable
-            .subscribe { value -> this.updateArtistBiographyInfo(value) }
-    }
-
-    private fun updateArtistBiographyInfo(artistBiography: List<Card>) {
-        if(artistBiography.isNotEmpty()) {
-            updateSourceList(artistBiography)
-        }else{
-            updateNoResultsUiState()
-        }
-
-
-    }
-
-    private fun updateSourceList(listCard: List<Card>){
-        val listAux: MutableList<CardUi> = mutableListOf()
-        for (card in listCard){
-            if(card is ServiceCard)
-                listAux.add(cardToUiCard(card))
-                //uiState.listCards.plus(cardToUiCard(card))
-        }
-        uiState.listCards = listAux
-    }
-
-    private fun cardToUiCard(card: Card): CardUi{
-        return CardUi(
-            card.sourceLogoUrl,
-            card.description,
-            card.infoUrl
-        )
-    }
-
-    private fun updateArtistBiographyInfoAux(){
-        updateArtistBiographyUiState()
-        updateArtistBiographyDescription()
-        updateArtistUIImage(uiState.listCards[servicesSpinner.selectedItemPosition])
+    private fun updateCardInfo(){
+        updateCardInfoUiState()
+        updateCardDescription()
+        updateCardUIImage(uiState.cardsList[servicesSpinner.selectedItemPosition])
         updateViewFullArticleState()
     }
 
-    private fun updateArtistBiographyUiState() {
+    private fun updateCardInfoUiState() {
         uiState = uiState.copy(
             artistName = uiState.artistName,
-            selectedCardPosition = servicesSpinner.selectedItemPosition,
+            spinnerPosition = servicesSpinner.selectedItemPosition,
             actionsEnabled = true
         )
     }
@@ -169,20 +170,21 @@ interface OtherDetailsView {
     private fun updateNoResultsUiState() {
         uiState = uiState.copy(
             artistName = "",
-            selectedCardPosition = 0, //TODO checkear posicion vacia
+            spinnerPosition = servicesSpinner.selectedItemPosition,
             actionsEnabled = false
         )
     }
 
-    private fun updateArtistBiographyDescription(){
+    private fun updateCardDescription(){
         runOnUiThread {
-            updateBiographyTextView()
+            updateDescriptionTextView()
         }
     }
 
-    private fun updateBiographyTextView(){
-        val text = convert.convertTextToHtml(uiState.listCards[servicesSpinner.selectedItemPosition].description, uiState.artistName)
-        biographyTextView.text = setTextHTML(text)
+    private fun updateDescriptionTextView(){
+        val uiDescription = cardDescriptionHelper.getCardDescriptionText(uiState.cardsList[servicesSpinner.selectedItemPosition])//TODO
+        val text = convert.convertTextToHtml(uiDescription, uiState.artistName)
+        cardDescriptionTextView.text = setTextHTML(text)
     }
 
     private fun setTextHTML(html: String): Spanned {
@@ -195,18 +197,18 @@ interface OtherDetailsView {
         return result
     }
 
-    private fun notifySearchBiography() {
-        onActionSubject.notify(OtherDetailsUiEvent.SearchBiography)
+    private fun notifySearchCardDescription() {
+        onActionSubject.notify(OtherDetailsUiEvent.SearchCardDescription)
     }
 
-    private fun updateArtistUIImage(artistBiography: CardUi) {
+    private fun updateCardUIImage(cardDescription: CardUi) {
         runOnUiThread {
-            updateArtistImageURL(artistBiography)
+            updateCardImageURL(cardDescription)
         }
     }
 
-    private fun updateArtistImageURL(artistBiography: CardUi) {
-        Picasso.get().load(artistBiography.urlLogo).into(imageView)
+    private fun updateCardImageURL(cardDescription: CardUi) {
+        Picasso.get().load(cardDescription.sourceLogoUrl).into(imageView)
     }
 
     private fun updateViewFullArticleState(){

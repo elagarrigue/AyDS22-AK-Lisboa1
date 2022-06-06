@@ -4,16 +4,17 @@ import ayds.lisboa.songinfo.otherdetails.model.entities.Source
 
 data class OtherDetailsUiState (
     val artistName: String = "",
-    val selectedCardPosition: Int = 0, //Todo revisar
-    var listCards: List<CardUi> = listOf(),
+    val spinnerPosition: Int = 0,
+    var cardsList: List<CardUi> = listOf(),
     val actionsEnabled: Boolean = false
 ) {
 }
 
 data class CardUi(
-    val urlLogo: String = "",
+    val sourceLogoUrl: String = "",
+    val viewFullArticleUrl: String = "",
     val description: String = "",
-    val urlSource: String = "",
+    val isLocallyStored: Boolean = false,
     val source: Source = Source.EMPTY
 )
 {
