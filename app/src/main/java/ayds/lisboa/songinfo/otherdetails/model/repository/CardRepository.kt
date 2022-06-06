@@ -1,7 +1,7 @@
 package ayds.lisboa.songinfo.otherdetails.model.repository
 
+import android.util.Log //TODO BORRAR
 import ayds.lisboa.songinfo.otherdetails.model.entities.Card
-import ayds.lisboa.songinfo.otherdetails.model.entities.EmptyCard
 import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
 import ayds.lisboa.songinfo.otherdetails.model.repository.external.Broker
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.CardLocalStorage
@@ -35,7 +35,16 @@ internal class CardRepositoryImpl(
     }
 
     private fun saveCardsToArtist(serviceCards: List<Card>){
-        serviceCards.map { cardLocalStorage.saveArtist(it as ServiceCard)}
+        for(card in serviceCards){
+            if(card is ServiceCard){
+                cardLocalStorage.saveArtist(card)
+            }
+            else{
+            Log.e("msg","EmptyCard")
+            //TODO no hace nada, borrar
+            }
+        }
+        //serviceCards.map { cardLocalStorage.saveArtist(it as ServiceCard)}
     }
 
 }

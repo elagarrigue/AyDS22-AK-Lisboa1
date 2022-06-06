@@ -25,13 +25,11 @@ interface OtherDetailsView {
 
     fun onCreate(savedInstanceState: Bundle?)
     fun openExternalLink(url: String)
-}
-
-class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
+}class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private val onActionSubject = Subject<OtherDetailsUiEvent>()
     private lateinit var otherDetailsModel: OtherDetailsModel
-    private val cardDescriptionHelper: CardDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper
+    private val cardDescriptionHelper: CardDescriptionHelper = OtherDetailsViewInjector.biographyDescriptionHelper //todo
     private val navigationUtils: NavigationUtils = UtilsInjector.navigationUtils
     private val convert : ConvertStringToHTML = OtherDetailsViewInjector.convertStringToHTML
 
@@ -78,9 +76,17 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateSpinner(){
-        val services = listOf<String>()
+        val sourceToString = mutableMapOf<Source,String>()//TODO derivar la creacion del mapper a un metodo
+        sourceToString[Source.LASTFM] = "LastFm"
+        sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
+        sourceToString[Source.WIKIPEDIA] = "Wikipedia"
+
+        var services: MutableList<String> = mutableListOf()
         for(card in uiState.listCards)
-            services.plus(card.source)
+            //services.add(card.source.toString()) //TODO creo que no anda
+            sourceToString[card.source]?.let { services.add(it) }
+
+        //val services = mutableListOf(sourceToString[Source.LASTFM],sourceToString[Source.NEW_YORK_TIMES],sourceToString[Source.WIKIPEDIA])
 
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
@@ -120,16 +126,21 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     private fun updateArtistBiographyInfo(artistBiography: List<Card>) {
         if(artistBiography.isNotEmpty()) {
             updateSourceList(artistBiography)
-        }else
+        }else{
             updateNoResultsUiState()
+        }
+
 
     }
 
     private fun updateSourceList(listCard: List<Card>){
+        val listAux: MutableList<CardUi> = mutableListOf()
         for (card in listCard){
             if(card is ServiceCard)
-                uiState.listCards.plus(cardToUiCard(card))
+                listAux.add(cardToUiCard(card))
+                //uiState.listCards.plus(cardToUiCard(card))
         }
+        uiState.listCards = listAux
     }
 
     private fun cardToUiCard(card: Card): CardUi{
