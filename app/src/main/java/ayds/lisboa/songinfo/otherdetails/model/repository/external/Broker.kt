@@ -14,15 +14,16 @@ internal class BrokerImpl(
 ) : Broker {
 
     override fun getCards (name : String) : List<Card> {
-        var cardList : MutableList<Card> = mutableListOf()
-        cardList.add(checkCard(proxyLastFM.getCard(name)))
-        cardList.add(checkCard(proxyNewYorkTimes.getCard(name)))
-        cardList.add(checkCard(proxyWikipedia.getCard(name)))
+        val cardList : MutableList<Card> = mutableListOf()
+        cardList.add(proxyLastFM.getCard(name))
+        cardList.add(proxyNewYorkTimes.getCard(name))
+        cardList.add(proxyWikipedia.getCard(name))
 
-        return cardList
+        return if( cardList.all{ it is EmptyCard } ) {
+            listOf()
+        } else{
+            cardList
+        }
     }
 
-    private fun checkCard(card: Card?): Card {
-        return card ?: EmptyCard
-    }
 }

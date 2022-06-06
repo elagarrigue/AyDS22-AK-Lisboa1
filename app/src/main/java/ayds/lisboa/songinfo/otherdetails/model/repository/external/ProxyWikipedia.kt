@@ -16,7 +16,7 @@ internal class ProxyWikipedia (
                 val dataCardLastFM = wikipediaService.getArtistDescription(artist)
                 if (dataCardLastFM != null) {
                     cardLastFM = ServiceCard(
-                        "", //TODO Wikipedia no retorna artista?
+                        "",
                         dataCardLastFM.description,
                         dataCardLastFM.source,
                         Source.WIKIPEDIA,

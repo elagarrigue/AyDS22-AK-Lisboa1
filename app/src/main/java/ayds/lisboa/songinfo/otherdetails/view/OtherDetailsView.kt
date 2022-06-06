@@ -56,7 +56,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         initArtistName()
         initProperties()
         initListeners()
-        initSpinner()
+        //initSpinner()
         initObservers()
         notifySearchBiography()
     }
@@ -78,15 +78,13 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         servicesSpinner = findViewById(R.id.spServices)
     }
 
-    private fun initSpinner(){
+    private fun updateSpinner(){
         val sourceToString = mutableMapOf<Source,String>()//TODO derivar la creacion del mapper a un metodo
         sourceToString[Source.LASTFM] = "LastFm"
         sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
         sourceToString[Source.WIKIPEDIA] = "Wikipedia"
 
-
         val services = listOf(sourceToString[Source.LASTFM],sourceToString[Source.NEW_YORK_TIMES],sourceToString[Source.WIKIPEDIA])//TODO lista hardcodeada
-
 
         val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
         servicesSpinner.adapter = spinnerAdapter
@@ -126,9 +124,8 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateArtistBiographyInfo(artistBiography: List<Card>) {
-        createSourceList(artistBiography)
+        updateSourceList(artistBiography)
         updateArtistBiographyInfoAux() //TODO codigo repetido en el spinner
-
     }
 
     private fun updateArtistBiographyInfoAux(){
@@ -138,12 +135,14 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
         updateViewFullArticleState()
     }
 
-    private fun createSourceList(artistBiography: List<Card>){
-        sourceList= artistBiography
+    private fun updateSourceList(listCard: List<Card>){
+        for (card in listCard){
+            uiState.listCards.plus(card) //todo duda
+        }
     }
 
     private fun updateUiState(artistBiography: Card) {
-        uiState = OtherDetailsUiState() //TODO metodo mas clean
+        //uiState = OtherDetailsUiState() //TODO metodo mas clean
         when (artistBiography) {
             is ServiceCard -> updateArtistBiographyUiState(artistBiography)
             is EmptyCard -> updateNoResultsUiState()
