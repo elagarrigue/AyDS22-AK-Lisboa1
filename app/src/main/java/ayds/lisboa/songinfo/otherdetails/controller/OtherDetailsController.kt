@@ -37,7 +37,7 @@ internal class OtherDetailsControllerImpl (
     }
 
     private fun openBiographyArticleUrl() {
-        otherDetailsView.openExternalLink(otherDetailsView.uiState.viewFullArticleUrl)
+        otherDetailsView.openExternalLink(otherDetailsView.uiState.listCards[otherDetailsView.uiState.selectedCardPosition].urlSource)
     }
 
 }
