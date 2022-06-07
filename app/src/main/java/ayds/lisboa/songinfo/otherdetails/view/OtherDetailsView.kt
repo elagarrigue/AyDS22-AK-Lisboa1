@@ -116,30 +116,21 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
 
     private fun updateSpinner(){
         runOnUiThread {
-            updateSpinnerUi()
+            updateSpinnerProperties()
         }
     }
 
-    private fun createSourceMapper(): MutableMap<Source,String>{
-        val sourceToString = mutableMapOf<Source,String>()
-        sourceToString[Source.LASTFM] = "LastFm"
-        sourceToString[Source.NEW_YORK_TIMES] = "New York Times"
-        sourceToString[Source.WIKIPEDIA] = "Wikipedia"
-
-        return sourceToString
+    private fun updateSpinnerProperties(){
+        updateSpinnerUi()
+        updateSpinnerListener()
     }
 
     private fun updateSpinnerUi(){
-
-        val sourceToString = createSourceMapper()
-
-        val services : MutableList<String> = mutableListOf()
-        for(card in uiState.cardsList)
-            sourceToString[card.source]?.let { services.add(it) }
-
-        val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,services)
+        val spinnerAdapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,createServicesListForSpinner())
         servicesSpinner.adapter = spinnerAdapter
+    }
 
+    private fun updateSpinnerListener(){
         servicesSpinner.onItemSelectedListener = object :
             AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, listPosition: Int, p3: Long) {
@@ -150,6 +141,15 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
                 updateNoResultsUiState()
             }
         }
+    }
+
+    private fun createServicesListForSpinner() : MutableList<String> {
+        val services : MutableList<String> = mutableListOf()
+
+        for(card in uiState.cardsList)
+            uiState.sourceToString[card.source]?.let { services.add(it) }
+
+        return services
     }
 
     private fun updateCardInfo(){

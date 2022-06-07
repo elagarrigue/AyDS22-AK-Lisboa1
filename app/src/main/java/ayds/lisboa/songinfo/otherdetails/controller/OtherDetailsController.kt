@@ -25,19 +25,19 @@ internal class OtherDetailsControllerImpl (
     private val observer: Observer<OtherDetailsUiEvent> =
         Observer { value ->
             when (value) {
-               is OtherDetailsUiEvent.SearchCardDescription -> searchBiography()
-               is OtherDetailsUiEvent.OpenCardInfoUrl -> openBiographyArticleUrl()
+               is OtherDetailsUiEvent.SearchCardDescription -> searchCardDescription()
+               is OtherDetailsUiEvent.OpenCardInfoUrl -> openViewFullArticleUrl()
             }
         }
 
-    private fun searchBiography(){
+    private fun searchCardDescription(){
         Thread {
             otherDetailsModel.searchCard(otherDetailsView.uiState.artistName)
         }.start()
     }
 
-    private fun openBiographyArticleUrl() {
-        otherDetailsView.openExternalLink(otherDetailsView.uiState.cardsList[otherDetailsView.uiState.spinnerPosition].viewFullArticleUrl)
+    private fun openViewFullArticleUrl() {
+        otherDetailsView.openExternalLink(otherDetailsView.uiState.getSelectedCard().viewFullArticleUrl)
     }
 
 }
