@@ -11,20 +11,17 @@ internal class ProxyWikipedia (
     ) : ProxyCard {
 
         override fun getCard(artist: String) : Card {
-            var cardWikipedia : ServiceCard? = null
-            try {
+            var cardWikipedia : ServiceCard? = try {
                 val dataCardWikipedia = wikipediaService.getArtistDescription(artist)
-                if (dataCardWikipedia != null) {
-                    cardWikipedia = ServiceCard(
-                        "",
-                        dataCardWikipedia.description,
-                        dataCardWikipedia.source,
-                        Source.WIKIPEDIA,
-                        dataCardWikipedia.sourceLogo
-                    )
-                }
+                ServiceCard(
+                    "",
+                    dataCardWikipedia.description,
+                    dataCardWikipedia.source,
+                    Source.WIKIPEDIA,
+                    dataCardWikipedia.sourceLogo
+                )
             } catch (e: Exception) {
-                cardWikipedia = null
+                null
             }
             return cardWikipedia ?: EmptyCard
         }

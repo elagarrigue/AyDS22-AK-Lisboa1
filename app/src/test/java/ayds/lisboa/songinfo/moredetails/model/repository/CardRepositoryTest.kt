@@ -35,7 +35,7 @@ class CardRepositoryTest {
         val result = cardRepository.getCardByArtist("artist")
 
         assertEquals(cardList, result)
-        assertTrue(cardList.first().isLocallyStored)
+        assertTrue(cardList.all { it.isLocallyStored })
     }
 
     @Test

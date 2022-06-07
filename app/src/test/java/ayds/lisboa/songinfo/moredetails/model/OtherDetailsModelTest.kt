@@ -18,7 +18,7 @@ class OtherDetailsModelTest{
     }
 
     @Test
-    fun `on search biography it should notify the result`() {
+    fun `on search card it should notify the result`() {
         val cardList: List<Card> = mockk()
         every { repository.getCardByArtist("artist") } returns cardList
         val cardDescriptionTester: (List<Card>) -> Unit = mockk(relaxed = true)
