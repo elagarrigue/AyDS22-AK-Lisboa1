@@ -182,7 +182,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateDescriptionTextView(){
-        val uiDescription = cardDescriptionHelper.getCardDescriptionText(uiState.cardsList[servicesSpinner.selectedItemPosition])//TODO
+        val uiDescription = cardDescriptionHelper.getCardDescriptionText(uiState.cardsList[servicesSpinner.selectedItemPosition])
         val text = convert.convertTextToHtml(uiDescription, uiState.artistName)
         cardDescriptionTextView.text = setTextHTML(text)
     }
