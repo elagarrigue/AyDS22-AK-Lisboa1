@@ -6,18 +6,18 @@ import ayds.observer.Observable
 import ayds.observer.Subject
 
 interface OtherDetailsModel {
-    val artistObservable: Observable<List<Card>>
+    val cardsObservable: Observable<List<Card>>
 
-    fun searchBiography(artistName: String)
+    fun searchCard(artistName: String)
 }
 
 internal class OtherDetailsModelImpl(private val repository: CardRepository) : OtherDetailsModel{
 
-    override val artistObservable = Subject<List<Card>>()
+    override val cardsObservable = Subject<List<Card>>()
 
-    override fun searchBiography(artistName: String) {
-        repository.getArtistInfo(artistName).let {
-            artistObservable.notify(it)
+    override fun searchCard(artistName: String) {
+        repository.getCardByArtist(artistName).let {
+            cardsObservable.notify(it)
         }
     }
 }

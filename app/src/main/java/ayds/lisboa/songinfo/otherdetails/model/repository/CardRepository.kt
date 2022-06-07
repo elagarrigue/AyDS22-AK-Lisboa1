@@ -6,7 +6,7 @@ import ayds.lisboa.songinfo.otherdetails.model.repository.external.Broker
 import ayds.lisboa.songinfo.otherdetails.model.repository.local.service.CardLocalStorage
 
 interface CardRepository{
-    fun getArtistInfo(artistName : String) : List<Card>
+    fun getCardByArtist(artistName : String) : List<Card>
 }
 
 internal class CardRepositoryImpl(
@@ -14,11 +14,11 @@ internal class CardRepositoryImpl(
     private val broker: Broker
 ) : CardRepository{
 
-    override fun getArtistInfo(artistName: String): List<Card> {
-        var listCards : List<Card> = cardLocalStorage.getInfo(artistName)
+    override fun getCardByArtist(artistName: String): List<Card> {
+        var listCards : List<Card> = cardLocalStorage.getCard(artistName)
 
         when {
-            listCards.isNotEmpty() -> markArtistBiographyAsLocal(listCards)
+            listCards.isNotEmpty() -> markCardAsLocal(listCards)
             else -> {
                     listCards = broker.getCards(artistName)
                     if (listCards.isNotEmpty()){
@@ -29,13 +29,13 @@ internal class CardRepositoryImpl(
         return listCards
     }
 
-    private fun markArtistBiographyAsLocal(listCards: List<Card>) {
+    private fun markCardAsLocal(listCards: List<Card>) {
         listCards.map { it.isLocallyStored = true}
     }
 
     private fun saveCardsToArtist(serviceCards: List<Card>){for(card in serviceCards){
         if(card is ServiceCard){
-            cardLocalStorage.saveArtist(card)
+            cardLocalStorage.saveCard(card)
         }
     }}
 

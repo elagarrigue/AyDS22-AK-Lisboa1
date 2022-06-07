@@ -85,7 +85,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun initObservers() {
-        otherDetailsModel.artistObservable
+        otherDetailsModel.cardsObservable
             .subscribe { value -> this.updateCardListInfo(value) }
     }
 

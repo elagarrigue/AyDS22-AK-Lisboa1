@@ -30,7 +30,7 @@ internal class CardLocalStorageImpl(
 
     override fun onUpgrade(dataBase: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
 
-    override fun saveArtist(serviceCard: ServiceCard) {
+    override fun saveCard(serviceCard: ServiceCard) {
         writableDatabase?.insert(ARTIST_TABLE, null, createMapValues(serviceCard))
     }
 
@@ -45,7 +45,7 @@ internal class CardLocalStorageImpl(
         return values
     }
 
-    override fun getInfo(artist: String): List<ServiceCard> {
+    override fun getCard(artist: String): List<ServiceCard> {
         val cursor = cursorDefinition(artist)
         return cursorToCardMapper.map(cursor)
     }

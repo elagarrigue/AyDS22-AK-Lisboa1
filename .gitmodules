@@ -1,9 +1,10 @@
-[submodule "libs/LastFMData"]
-	path = libs/LastFMData
-	url = https://github.com/yaninaerivera/Lisboa1-LastFM-Data.git
 [submodule "Lisboa1-LastFM-Data"]
 	path = Lisboa1-LastFM-Data
 	url = https://github.com/yaninaerivera/Lisboa1-LastFM-Data.git
 [submodule "AyDS-NewYork2-Submodule"]
 	path = AyDS-NewYork2-Submodule
-	url = https://github.com/FacundoAlvarado9/AyDS-NewYork2-Submodule.git
+	url = https://github.com/FacundoAlvarado9/AyDS-NewYork2-Submodule
+[submodule "wikipedia-module"]
+	path = wikipedia-module
+	url = https://github.com/TomasFelp/wikipedia-module
+
