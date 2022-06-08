@@ -5,5 +5,5 @@ import ayds.lisboa.songinfo.otherdetails.model.entities.ServiceCard
 interface CardLocalStorage {
     fun saveCard(serviceCard: ServiceCard)
 
-    fun getCard(artist: String): List<ServiceCard>
+    fun getCards(artist: String): List<ServiceCard>
 }

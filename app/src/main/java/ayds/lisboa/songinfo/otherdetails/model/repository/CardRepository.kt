@@ -15,7 +15,7 @@ internal class CardRepositoryImpl(
 ) : CardRepository{
 
     override fun getCardByArtist(artistName: String): List<Card> {
-        var listCards : List<Card> = cardLocalStorage.getCard(artistName)
+        var listCards : List<Card> = cardLocalStorage.getCards(artistName)
 
         when {
             listCards.isNotEmpty() -> markCardAsLocal(listCards)

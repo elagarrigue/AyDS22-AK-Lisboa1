@@ -26,7 +26,7 @@ class OtherDetailsModelTest{
             cardDescriptionTester(it)
         }
 
-        otherDetailsModel.searchCard("artist")
+        otherDetailsModel.searchCards("artist")
 
         verify { cardDescriptionTester (cardList) }
     }

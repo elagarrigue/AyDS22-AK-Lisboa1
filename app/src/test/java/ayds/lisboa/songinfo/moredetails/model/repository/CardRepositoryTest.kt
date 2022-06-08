@@ -30,7 +30,7 @@ class CardRepositoryTest {
             ServiceCard("artist", "description", "infoUrl", Source.LASTFM, "sourceLogoUrl", false)
         )
 
-        every { cardLocalStorage.getCard("artist") } returns cardList
+        every { cardLocalStorage.getCards("artist") } returns cardList
 
         val result = cardRepository.getCardByArtist("artist")
 
@@ -45,7 +45,7 @@ class CardRepositoryTest {
         val card = ServiceCard("artist", "biography", "articleUrl",Source.LASTFM,"sourceLogoUrl",false)
         val sourceCard = LastFMArtistBiography("artist","biography","articleUrl","sourceLogoUrl")
 
-        every { cardLocalStorage.getCard("artist") } returns listOf()
+        every { cardLocalStorage.getCards("artist") } returns listOf()
         every { lastFMService.getArtistBio("artist") } returns sourceCard
         every { broker.getCards("artist") } returns listOf(card)
 
@@ -59,7 +59,7 @@ class CardRepositoryTest {
 
     @Test
     fun `given non existing artistBiography by term should return empty artistBiography`() {
-        every { cardLocalStorage.getCard("artist") } returns emptyList()
+        every { cardLocalStorage.getCards("artist") } returns emptyList()
         every { broker.getCards("artist") } returns listOf()
 
         val result = cardRepository.getCardByArtist("artist")
@@ -72,7 +72,7 @@ class CardRepositoryTest {
     fun `given service exception should return empty artistBiography`() {
         val proxyLastFM : ProxyLastFM = mockk()
 
-        every { cardLocalStorage.getCard("artist") } returns emptyList()
+        every { cardLocalStorage.getCards("artist") } returns emptyList()
         every { broker.getCards("artist") } returns listOf()
         every { proxyLastFM.getCard("artist") } throws mockk<Exception>()
 

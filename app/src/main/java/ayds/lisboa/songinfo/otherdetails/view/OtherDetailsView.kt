@@ -95,13 +95,7 @@ class OtherDetailsViewActivity : AppCompatActivity(), OtherDetailsView {
     }
 
     private fun updateSourceList(cardList: List<Card>){
-        val listAux: MutableList<CardUi> = mutableListOf()
-        for (card in cardList){
-            if(card is ServiceCard){
-                listAux.add(cardToUiCard(card))
-            }
-        }
-        uiState.cardsList = listAux
+        uiState.cardsList = cardList.filterIsInstance<ServiceCard>().map { cardToUiCard(it) }
     }
 
     private fun cardToUiCard(card: Card): CardUi {

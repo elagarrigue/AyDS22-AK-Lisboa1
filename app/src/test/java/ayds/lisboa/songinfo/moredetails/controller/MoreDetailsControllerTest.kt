@@ -37,7 +37,7 @@ class MoreDetailsControllerTest {
 
         onActionSubject.notify(OtherDetailsUiEvent.SearchCardDescription)
 
-        verify { otherDetailsModel.searchCard("Taylor Swift") }
+        verify { otherDetailsModel.searchCards("Taylor Swift") }
     }
 
     @Test

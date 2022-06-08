@@ -32,7 +32,7 @@ internal class OtherDetailsControllerImpl (
 
     private fun searchCardDescription(){
         Thread {
-            otherDetailsModel.searchCard(otherDetailsView.uiState.artistName)
+            otherDetailsModel.searchCards(otherDetailsView.uiState.artistName)
         }.start()
     }
 
