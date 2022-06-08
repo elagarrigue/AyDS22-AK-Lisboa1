@@ -1,11 +1,10 @@
 include ':lastfmdata'
-project(':lastfmdata').projectDir = new File('libs/Lisboa1-LastFM-Data')
+project(':lastfmdata').projectDir = new File('libs/lastfm')
 include ':nytimes'
-project(':nytimes').projectDir = new File('libs/AyDS-NewYork2-Submodule')
+project(':nytimes').projectDir = new File('libs/newyorktimes')
 include ':wikipedia'
-project(':wikipedia').projectDir = new File('libs/wikipedia-module')
+project(':wikipedia').projectDir = new File('libs/wikipedia')
 include ':app'
 include 'observer'
 rootProject.name = "AK Lisboa"
 
-include ':Lisboa1-LastFM-Data'
