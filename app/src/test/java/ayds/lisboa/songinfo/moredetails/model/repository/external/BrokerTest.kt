@@ -39,6 +39,21 @@ class BrokerTest {
     }
 
     @Test
+    fun `given a name of an existing artist in some of the services, should return a list with ServiceCard from services it exist and EmptyCards from the ones who not`(){
+        val lastFmCard = ServiceCard("name", "description", "infoUrl", Source.LASTFM, "sourceLogoUrl", false)
+        val wikipediaCard = ServiceCard("name", "description", "infoUrl", Source.WIKIPEDIA, "sourceLogoUrl", false)
+
+        every{ proxyLastFM.getCard("name") } returns lastFmCard
+        every{ proxyNewYorkTimes.getCard("name") } returns EmptyCard
+        every{ proxyWikipedia.getCard("name") } returns wikipediaCard
+
+        val result = broker.getCards("name")
+        val expected  = listOf(lastFmCard,EmptyCard,wikipediaCard)
+
+        assertEquals(expected,result)
+    }
+
+    @Test
     fun `given a name of a non existing artist, should return an empty list`(){
 
         every{ proxyLastFM.getCard("name") } returns EmptyCard
