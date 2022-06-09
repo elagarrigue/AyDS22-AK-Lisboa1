@@ -2,6 +2,7 @@ package ayds.lisboa.songinfo.moredetails.controller
 
 import ayds.lisboa.songinfo.otherdetails.controller.OtherDetailsControllerImpl
 import ayds.lisboa.songinfo.otherdetails.model.OtherDetailsModel
+import ayds.lisboa.songinfo.otherdetails.view.CardUi
 import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsUiEvent
 import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsUiState
 import ayds.lisboa.songinfo.otherdetails.view.OtherDetailsView
@@ -32,19 +33,25 @@ class MoreDetailsControllerTest {
 
     @Test
     fun `on search event should search biography`() {
-        every { otherDetailsView.uiState } returns OtherDetailsUiState(artistName = "biography")
+        every { otherDetailsView.uiState } returns OtherDetailsUiState(artistName = "Taylor Swift")
 
-        onActionSubject.notify(OtherDetailsUiEvent.SearchBiography)
+        onActionSubject.notify(OtherDetailsUiEvent.SearchCardDescription)
 
-        verify { otherDetailsModel.searchBiography("biography") }
+        verify { otherDetailsModel.searchCards("Taylor Swift") }
     }
 
     @Test
     fun `on open full article url event should open external link`  () {
-        every { otherDetailsView.uiState } returns OtherDetailsUiState(viewFullArticleUrl = "url")
+        val cardList: List<CardUi> = listOf(
+            CardUi("", "url", "")
+        )
+        val uiState = OtherDetailsUiState("",0,cardList)
+        every { otherDetailsView.uiState.cardsList } returns (uiState.cardsList)
+        every { otherDetailsView.uiState.spinnerPosition } returns 0
 
-        onActionSubject.notify(OtherDetailsUiEvent.OpenBiographyArticleUrl)
+        onActionSubject.notify(OtherDetailsUiEvent.OpenCardInfoUrl)
 
         verify { otherDetailsView.openExternalLink("url") }
     }
 }
+

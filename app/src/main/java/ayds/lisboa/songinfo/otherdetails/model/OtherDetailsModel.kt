@@ -1,23 +1,23 @@
 package ayds.lisboa.songinfo.otherdetails.model
 
-import ayds.lisboa.songinfo.otherdetails.model.entities.ArtistBiography
-import ayds.lisboa.songinfo.otherdetails.model.repository.ArtistBiographyRepository
+import ayds.lisboa.songinfo.otherdetails.model.entities.Card
+import ayds.lisboa.songinfo.otherdetails.model.repository.CardRepository
 import ayds.observer.Observable
 import ayds.observer.Subject
 
 interface OtherDetailsModel {
-    val artistObservable: Observable<ArtistBiography>
+    val cardsObservable: Observable<List<Card>>
 
-    fun searchBiography(artistName: String)
+    fun searchCards(artistName: String)
 }
 
-internal class OtherDetailsModelImpl(private val repository: ArtistBiographyRepository) : OtherDetailsModel{
+internal class OtherDetailsModelImpl(private val repository: CardRepository) : OtherDetailsModel{
 
-    override val artistObservable = Subject<ArtistBiography>()
+    override val cardsObservable = Subject<List<Card>>()
 
-    override fun searchBiography(artistName: String) {
-        repository.getArtistInfo(artistName).let {
-            artistObservable.notify(it)
+    override fun searchCards(artistName: String) {
+        repository.getCardByArtist(artistName).let {
+            cardsObservable.notify(it)
         }
     }
 }
